@@ -1,0 +1,2485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimeVerse — Rise Through the Ranks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & TOKENS ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:      #0a0a0f;
+  --ink2:     #12121a;
+  --ink3:     #1c1c28;
+  --surface:  #1e1e2e;
+  --surface2: #252535;
+  --line:     rgba(255,255,255,0.08);
+  --line2:    rgba(255,255,255,0.14);
+  --muted:    rgba(255,255,255,0.38);
+  --body:     rgba(255,255,255,0.72);
+  --white:    #ffffff;
+  --v:        #7c6fcd;
+  --v2:       #a99ef0;
+  --v3:       #4a3f9f;
+  --gold:     #e8a030;
+  --gold2:    #f0c060;
+  --coral:    #d85a30;
+  --teal:     #1da880;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-ui:      'Syne', sans-serif;
+  --font-jp:      'Noto Sans JP', sans-serif;
+  --r-sm: 6px; --r-md: 12px; --r-lg: 18px; --r-xl: 28px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── PAGE ROUTER ── */
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background: rgba(10,10,15,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: 2px;
+  color: var(--white);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer;
+}
+.nav-logo-mark {
+  width: 30px; height: 30px;
+  background: var(--v);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: white; font-weight: 900;
+}
+.nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+.nav-links button {
+  color: var(--muted);
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 14px; font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  transition: color 0.2s, background 0.2s;
+}
+.nav-links button:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+.nav-links button.active-nav { color: var(--v2); background: rgba(124,111,205,0.12); }
+.nav-cta {
+  background: var(--v) !important;
+  color: white !important;
+  font-weight: 700 !important;
+}
+.nav-cta:hover { background: var(--v2) !important; color: var(--ink) !important; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--v); color: white;
+  font-family: var(--font-ui); font-weight: 700; font-size: 14px;
+  letter-spacing: 0.04em; padding: 12px 24px;
+  border-radius: var(--r-sm); border: none; cursor: pointer;
+  text-decoration: none; transition: background 0.2s, transform 0.15s;
+}
+.btn-primary:hover { background: var(--v2); color: var(--ink); transform: translateY(-1px); }
+.btn-gold { background: var(--gold) !important; color: var(--ink) !important; }
+.btn-gold:hover { background: var(--gold2) !important; }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--body); background: none;
+  font-family: var(--font-ui); font-weight: 600; font-size: 14px;
+  padding: 12px 20px; border-radius: var(--r-sm);
+  border: 1px solid var(--line2); cursor: pointer;
+  text-decoration: none; transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--v2); color: var(--v2); background: rgba(124,111,205,0.07); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(5,5,10,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 800;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-xl);
+  padding: 40px;
+  max-width: 560px; width: 90%;
+  position: relative;
+  animation: modal-in 0.25s ease;
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-size: 22px; line-height: 1;
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 36px; letter-spacing: 1px; color: var(--white);
+  margin-bottom: 8px;
+}
+.modal-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+
+/* ── FORM STYLES ── */
+.form-group { margin-bottom: 18px; }
+.form-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: block; }
+.form-input {
+  width: 100%; background: var(--ink2); border: 1px solid var(--line2);
+  border-radius: var(--r-sm); padding: 12px 16px;
+  color: var(--white); font-family: var(--font-ui); font-size: 15px;
+  outline: none; transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--v); }
+.form-input::placeholder { color: var(--muted); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.oauth-row { display: flex; gap: 10px; margin-top: 14px; }
+.oauth-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px; border-radius: var(--r-sm); border: 1px solid var(--line2);
+  background: var(--ink3); color: var(--body);
+  font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.oauth-btn:hover { border-color: var(--v); background: rgba(124,111,205,0.08); color: var(--white); }
+.divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line2); }
+.divider span { font-size: 12px; color: var(--muted); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--surface2); border: 1px solid var(--line2);
+  border-radius: var(--r-md); padding: 14px 20px;
+  font-size: 14px; color: var(--white); z-index: 1000;
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s ease;
+  display: flex; align-items: center; gap: 10px;
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-icon { font-size: 18px; }
+
+/* ════════════════════════════════════
+   LANDING PAGE
+════════════════════════════════════ */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center;
+  overflow: hidden; padding: 120px 48px 80px;
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  pointer-events: none;
+}
+.hero-orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; animation: orb-drift 8s ease-in-out infinite; }
+.hero-orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(124,111,205,0.28) 0%, transparent 70%); top: -100px; left: -100px; }
+.hero-orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(232,160,48,0.18) 0%, transparent 70%); top: 40%; right: 5%; animation-delay: -3s; }
+.hero-orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(29,168,128,0.15) 0%, transparent 70%); bottom: 10%; left: 30%; animation-delay: -5s; }
+@keyframes orb-drift { 0%,100% { transform: translate(0,0); } 33% { transform: translate(20px,-30px); } 66% { transform: translate(-15px,20px); } }
+
+.hero-content { position: relative; z-index: 2; max-width: 720px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(124,111,205,0.15); border: 1px solid rgba(124,111,205,0.35);
+  border-radius: 40px; padding: 6px 16px 6px 10px; margin-bottom: 32px;
+  animation: fade-up 0.6s ease both;
+}
+.hero-eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--v2); animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.7); } }
+.hero-eyebrow span { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--v2); text-transform: uppercase; }
+.hero-title { font-family: var(--font-display); font-size: clamp(72px, 10vw, 120px); line-height: 0.92; letter-spacing: 2px; margin-bottom: 8px; animation: fade-up 0.7s 0.1s ease both; }
+.hero-title .line-1 { color: var(--white); display: block; }
+.hero-title .line-2 { display: block; -webkit-text-stroke: 2px var(--v2); color: transparent; }
+.hero-title .line-3 { color: var(--gold); display: block; }
+.hero-jp { font-family: var(--font-jp); font-size: 13px; color: var(--muted); letter-spacing: 0.2em; margin-bottom: 28px; animation: fade-up 0.7s 0.2s ease both; }
+.hero-desc { font-size: 17px; color: var(--body); line-height: 1.7; max-width: 520px; margin-bottom: 40px; animation: fade-up 0.7s 0.3s ease both; }
+.hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; animation: fade-up 0.7s 0.4s ease both; }
+.hero-stats { display: flex; align-items: center; gap: 32px; margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--line); animation: fade-up 0.7s 0.5s ease both; }
+.hero-stat-num { font-family: var(--font-display); font-size: 36px; letter-spacing: 1px; color: var(--white); display: block; line-height: 1; }
+.hero-stat-lbl { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
+.hero-stat-divider { width: 1px; height: 40px; background: var(--line2); }
+.hero-visual { position: absolute; right: 48px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; animation: fade-left 0.8s 0.3s ease both; z-index: 2; }
+@keyframes fade-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fade-left { from { opacity: 0; transform: translateX(32px) translateY(-50%); } to { opacity: 1; transform: translateX(0) translateY(-50%); } }
+.rank-card { background: rgba(30,30,46,0.85); backdrop-filter: blur(20px); border: 1px solid var(--line2); border-radius: var(--r-md); padding: 14px 18px; display: flex; align-items: center; gap: 14px; width: 240px; position: relative; overflow: hidden; transition: transform 0.3s, border-color 0.3s; cursor: pointer; }
+.rank-card:hover { transform: translateX(-6px); border-color: var(--v); }
+.rank-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.rank-card.legend::before  { background: var(--coral); }
+.rank-card.platinum::before { background: var(--v2); }
+.rank-card.gold::before    { background: var(--gold); }
+.rank-card.silver::before  { background: #8ca8c0; }
+.rank-card.bronze::before  { background: #a07850; }
+.rank-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.rank-card.legend  .rank-icon { background: rgba(216,90,48,0.2); }
+.rank-card.platinum .rank-icon { background: rgba(169,158,240,0.2); }
+.rank-card.gold    .rank-icon { background: rgba(232,160,48,0.2); }
+.rank-card.silver  .rank-icon { background: rgba(140,168,192,0.2); }
+.rank-card.bronze  .rank-icon { background: rgba(160,120,80,0.2); }
+.rank-name { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; color: var(--white); }
+.rank-pts { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: var(--font-jp); }
+.rank-bar-wrap { flex: 1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; margin-top: 6px; overflow: hidden; }
+.rank-bar-fill { height: 100%; border-radius: 4px; }
+.rank-card.legend  .rank-bar-fill { width: 88%; background: var(--coral); }
+.rank-card.platinum .rank-bar-fill { width: 72%; background: var(--v2); }
+.rank-card.gold    .rank-bar-fill { width: 55%; background: var(--gold); }
+.rank-card.silver  .rank-bar-fill { width: 38%; background: #8ca8c0; }
+.rank-card.bronze  .rank-bar-fill { width: 20%; background: #a07850; }
+
+.features-strip { padding: 80px 48px; background: var(--ink2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.features-strip-inner { max-width: 1100px; margin: 0 auto; }
+.strip-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--v2); margin-bottom: 16px; }
+.strip-title { font-family: var(--font-display); font-size: clamp(40px,5vw,64px); letter-spacing: 1px; line-height: 0.95; color: var(--white); margin-bottom: 48px; }
+.strip-title em { font-style: normal; color: var(--gold); }
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+.feature-cell { background: var(--ink2); padding: 32px 28px; transition: background 0.2s; cursor: pointer; }
+.feature-cell:hover { background: var(--surface); }
+.feature-icon-wrap { width: 44px; height: 44px; border-radius: var(--r-sm); margin-bottom: 18px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.f-purple { background: rgba(124,111,205,0.18); }
+.f-gold   { background: rgba(232,160,48,0.18); }
+.f-teal   { background: rgba(29,168,128,0.18); }
+.f-coral  { background: rgba(216,90,48,0.18); }
+.f-blue   { background: rgba(56,138,221,0.18); }
+.f-pink   { background: rgba(212,83,126,0.18); }
+.feature-cell h3 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.feature-cell p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+.ranking-section { padding: 100px 48px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--teal); margin-bottom: 16px; }
+.section-title { font-family: var(--font-display); font-size: clamp(36px,4vw,56px); letter-spacing: 1px; line-height: 0.95; color: var(--white); margin-bottom: 20px; }
+.section-body { font-size: 15px; color: var(--body); line-height: 1.75; margin-bottom: 28px; }
+.tier-list { display: flex; flex-direction: column; gap: 8px; }
+.tier-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); transition: border-color 0.2s, transform 0.2s; cursor: default; }
+.tier-item:hover { border-color: var(--line2); transform: translateX(6px); }
+.tier-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.t-legend  { background: var(--coral); box-shadow: 0 0 8px rgba(216,90,48,0.6); }
+.t-platinum { background: var(--v2); box-shadow: 0 0 8px rgba(169,158,240,0.6); }
+.t-gold    { background: var(--gold); box-shadow: 0 0 8px rgba(232,160,48,0.6); }
+.t-silver  { background: #8ca8c0; }
+.t-bronze  { background: #a07850; }
+.tier-name { font-size: 14px; font-weight: 700; color: var(--white); min-width: 72px; }
+.tier-range { font-size: 12px; color: var(--muted); font-family: var(--font-jp); flex: 1; }
+.tier-perk { font-size: 11px; color: var(--v2); font-weight: 600; letter-spacing: 0.04em; background: rgba(124,111,205,0.12); padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+.tier-item:nth-child(1) .tier-perk { background: rgba(216,90,48,0.12); color: var(--coral); }
+.tier-item:nth-child(2) .tier-perk { background: rgba(169,158,240,0.12); color: var(--v2); }
+.tier-item:nth-child(3) .tier-perk { background: rgba(232,160,48,0.12); color: var(--gold); }
+
+.coin-section { padding: 80px 48px; background: var(--ink2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.coin-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.coin-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.coin-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 20px; transition: border-color 0.2s, transform 0.2s; cursor: default; }
+.coin-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+.coin-card-num { font-family: var(--font-display); font-size: 32px; letter-spacing: 1px; color: var(--gold); display: block; margin-bottom: 4px; }
+.coin-card-lbl { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.coin-card-icon { font-size: 20px; margin-bottom: 12px; display: block; }
+
+.events-section { padding: 100px 48px; max-width: 1100px; margin: 0 auto; text-align: center; }
+.events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
+.event-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 28px 24px; text-align: left; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; cursor: pointer; }
+.event-card:hover { border-color: var(--v); transform: translateY(-4px); }
+.event-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.event-card:nth-child(1)::before { background: linear-gradient(90deg, var(--v), var(--teal)); }
+.event-card:nth-child(2)::before { background: linear-gradient(90deg, var(--gold), var(--coral)); }
+.event-card:nth-child(3)::before { background: linear-gradient(90deg, var(--coral), var(--v)); }
+.event-status { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+.status-live  { background: rgba(29,168,128,0.18); color: var(--teal); }
+.status-soon  { background: rgba(232,160,48,0.18); color: var(--gold); }
+.status-open  { background: rgba(124,111,205,0.18); color: var(--v2); }
+.event-card h3 { font-size: 17px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.event-card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+.event-prize { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--gold); }
+.event-prize-coin { width: 20px; height: 20px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--ink); font-weight: 900; flex-shrink: 0; }
+
+.proof-section { padding: 80px 48px; background: var(--ink2); border-top: 1px solid var(--line); }
+.proof-inner { max-width: 1100px; margin: 0 auto; }
+.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+.proof-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; }
+.proof-quote { font-size: 14px; color: var(--body); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+.proof-author { display: flex; align-items: center; gap: 12px; }
+.proof-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.proof-name { font-size: 13px; font-weight: 700; color: var(--white); }
+.proof-handle { font-size: 11px; color: var(--muted); font-family: var(--font-jp); }
+
+.cta-section { padding: 120px 48px; text-align: center; position: relative; overflow: hidden; }
+.cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 50% 0%, rgba(124,111,205,0.2) 0%, transparent 70%); pointer-events: none; }
+.cta-section h2 { font-family: var(--font-display); font-size: clamp(52px,8vw,96px); line-height: 0.92; letter-spacing: 2px; color: var(--white); margin-bottom: 24px; position: relative; }
+.cta-section h2 em { font-style: normal; -webkit-text-stroke: 2px var(--v2); color: transparent; }
+.cta-section p { font-size: 17px; color: var(--body); max-width: 480px; margin: 0 auto 40px; line-height: 1.7; position: relative; }
+.cta-actions { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; position: relative; }
+.login-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 20px; position: relative; }
+.login-oauth-btn { display: inline-flex; align-items: center; gap: 9px; padding: 11px 20px; border-radius: var(--r-sm); border: 1px solid var(--line2); background: var(--surface); color: var(--body); font-family: var(--font-ui); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.login-oauth-btn:hover { border-color: var(--v); background: rgba(124,111,205,0.08); color: var(--white); }
+.oauth-icon-wrap { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; }
+.discord-bg { background: #5865F2; color: white; }
+.google-bg  { background: white; color: #333; }
+
+footer { padding: 40px 48px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-logo { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; color: var(--white); }
+.footer-links { display: flex; gap: 28px; list-style: none; flex-wrap: wrap; }
+.footer-links button { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; font-family: var(--font-ui); transition: color 0.2s; }
+.footer-links button:hover { color: var(--white); }
+.footer-copy { font-size: 12px; color: var(--muted); font-family: var(--font-jp); }
+
+/* ════════════════════════════════════
+   FEED PAGE
+════════════════════════════════════ */
+.app-layout { display: flex; min-height: 100vh; padding-top: 62px; }
+.sidebar {
+  width: 260px; flex-shrink: 0;
+  background: var(--ink2);
+  border-right: 1px solid var(--line);
+  padding: 28px 16px;
+  position: fixed; top: 62px; left: 0; bottom: 0;
+  overflow-y: auto;
+}
+.sidebar-section { margin-bottom: 28px; }
+.sidebar-label { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 0 12px; margin-bottom: 8px; }
+.sidebar-btn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 10px 12px; border-radius: var(--r-sm);
+  background: none; border: none; cursor: pointer;
+  color: var(--body); font-family: var(--font-ui); font-size: 14px; font-weight: 500;
+  transition: background 0.2s, color 0.2s; text-align: left;
+}
+.sidebar-btn:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+.sidebar-btn.active { background: rgba(124,111,205,0.15); color: var(--v2); }
+.sidebar-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+.sidebar-user {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 16px; border-top: 1px solid var(--line);
+  background: var(--ink2);
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+}
+.sidebar-user:hover { background: var(--surface); }
+.sidebar-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--v3); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.sidebar-uname { font-size: 13px; font-weight: 700; color: var(--white); }
+.sidebar-rank-badge { font-size: 10px; color: var(--gold); font-weight: 600; }
+
+.main-content { margin-left: 260px; flex: 1; padding: 28px; max-width: 760px; }
+.right-panel { width: 300px; flex-shrink: 0; padding: 28px 20px 28px 0; position: sticky; top: 80px; align-self: flex-start; }
+
+/* Feed */
+.feed-filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--line2); background: none; color: var(--muted); font-family: var(--font-ui); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.filter-btn:hover, .filter-btn.active { background: var(--v); border-color: var(--v); color: white; }
+
+.post-composer {
+  background: var(--surface); border: 1px solid var(--line2);
+  border-radius: var(--r-lg); padding: 20px; margin-bottom: 20px;
+}
+.composer-row { display: flex; align-items: flex-start; gap: 14px; }
+.composer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--v3); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+.composer-input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--white); font-family: var(--font-ui); font-size: 15px; resize: none;
+  min-height: 60px; line-height: 1.5;
+}
+.composer-input::placeholder { color: var(--muted); }
+.composer-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.composer-tools { display: flex; gap: 6px; }
+.composer-tool { background: none; border: none; cursor: pointer; font-size: 18px; padding: 6px; border-radius: var(--r-sm); transition: background 0.2s; color: var(--muted); }
+.composer-tool:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+
+.post-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); margin-bottom: 16px; overflow: hidden; transition: border-color 0.2s; }
+.post-card:hover { border-color: var(--line2); }
+.post-header { display: flex; align-items: center; gap: 12px; padding: 18px 20px 12px; }
+.post-avatar { width: 42px; height: 42px; border-radius: 50%; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
+.post-meta { flex: 1; }
+.post-author { font-size: 15px; font-weight: 700; color: var(--white); cursor: pointer; }
+.post-author:hover { color: var(--v2); }
+.post-time { font-size: 12px; color: var(--muted); font-family: var(--font-jp); }
+.post-rank-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+.badge-legend  { background: rgba(216,90,48,0.2);  color: var(--coral); }
+.badge-platinum { background: rgba(169,158,240,0.2); color: var(--v2); }
+.badge-gold    { background: rgba(232,160,48,0.2);  color: var(--gold); }
+.badge-silver  { background: rgba(140,168,192,0.2); color: #8ca8c0; }
+.badge-bronze  { background: rgba(160,120,80,0.2);  color: #c09060; }
+.post-more { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 20px; padding: 4px 8px; border-radius: var(--r-sm); transition: background 0.2s; }
+.post-more:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+.post-body { padding: 0 20px 14px; font-size: 15px; color: var(--body); line-height: 1.65; }
+.post-tags { padding: 0 20px 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+.post-tag { font-size: 12px; color: var(--v2); background: rgba(124,111,205,0.1); padding: 3px 10px; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+.post-tag:hover { background: rgba(124,111,205,0.2); }
+.post-image { width: 100%; max-height: 340px; object-fit: cover; display: block; background: var(--ink3); border-radius: 0; }
+.post-image-placeholder { width: 100%; height: 200px; background: linear-gradient(135deg, var(--ink3) 0%, var(--surface2) 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+.post-actions { display: flex; align-items: center; gap: 4px; padding: 12px 16px; border-top: 1px solid var(--line); }
+.post-action-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+  padding: 7px 12px; border-radius: var(--r-sm); transition: all 0.2s;
+}
+.post-action-btn:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+.post-action-btn.liked { color: var(--coral); }
+.post-action-btn.liked:hover { background: rgba(216,90,48,0.1); }
+.post-action-spacer { flex: 1; }
+.post-views { font-size: 12px; color: var(--muted); padding: 7px 12px; }
+
+/* Right panel widgets */
+.widget { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 20px; margin-bottom: 16px; }
+.widget-title { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.leaderboard-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.leaderboard-item:last-child { border-bottom: none; }
+.lb-rank { font-family: var(--font-display); font-size: 20px; color: var(--muted); width: 28px; text-align: center; flex-shrink: 0; }
+.lb-rank.top1 { color: var(--gold); }
+.lb-rank.top2 { color: #8ca8c0; }
+.lb-rank.top3 { color: #c09060; }
+.lb-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.lb-name { font-size: 13px; font-weight: 600; color: var(--white); flex: 1; }
+.lb-pts { font-size: 12px; color: var(--muted); font-family: var(--font-jp); }
+
+/* ════════════════════════════════════
+   PROFILE PAGE
+════════════════════════════════════ */
+.profile-header {
+  background: var(--ink2);
+  border-bottom: 1px solid var(--line);
+  position: relative; overflow: hidden;
+}
+.profile-cover { height: 200px; background: linear-gradient(135deg, var(--v3) 0%, var(--ink3) 50%, var(--gold) 100%); position: relative; }
+.profile-cover-pattern {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.profile-info-row { display: flex; align-items: flex-end; gap: 24px; padding: 0 40px 28px; margin-top: -50px; position: relative; flex-wrap: wrap; }
+.profile-avatar-lg {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: var(--v3); border: 4px solid var(--ink2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; font-weight: 700; flex-shrink: 0;
+}
+.profile-details { flex: 1; padding-bottom: 8px; }
+.profile-name { font-family: var(--font-display); font-size: 36px; letter-spacing: 1px; color: var(--white); line-height: 1; margin-bottom: 6px; }
+.profile-handle { font-size: 14px; color: var(--muted); font-family: var(--font-jp); margin-bottom: 10px; }
+.profile-stats-row { display: flex; gap: 24px; flex-wrap: wrap; }
+.profile-stat { text-align: center; }
+.profile-stat-num { font-family: var(--font-display); font-size: 24px; color: var(--white); display: block; line-height: 1; }
+.profile-stat-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.profile-actions { display: flex; gap: 10px; align-items: flex-start; padding-bottom: 8px; flex-wrap: wrap; }
+
+.profile-rank-display {
+  padding: 20px 40px;
+  display: flex; align-items: center; gap: 20px;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.rank-progress-wrap { flex: 1; min-width: 200px; }
+.rank-progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.rank-progress-bar { height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+.rank-progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--v), var(--v2)); transition: width 1s ease; }
+.rank-badge-lg { padding: 8px 20px; border-radius: var(--r-sm); font-size: 14px; font-weight: 700; letter-spacing: 0.06em; }
+.rank-badge-gold { background: rgba(232,160,48,0.2); color: var(--gold); border: 1px solid rgba(232,160,48,0.3); }
+.rank-badge-legend { background: rgba(216,90,48,0.2); color: var(--coral); border: 1px solid rgba(216,90,48,0.3); }
+
+.profile-tabs { display: flex; border-bottom: 1px solid var(--line); padding: 0 40px; }
+.profile-tab { padding: 14px 20px; font-size: 14px; font-weight: 600; color: var(--muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; font-family: var(--font-ui); }
+.profile-tab:hover { color: var(--white); }
+.profile-tab.active { color: var(--v2); border-bottom-color: var(--v2); }
+
+.profile-body { padding: 28px 40px; }
+.posts-masonry { columns: 2; gap: 16px; }
+.masonry-card { break-inside: avoid; margin-bottom: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s; }
+.masonry-card:hover { border-color: var(--v); transform: translateY(-2px); }
+.masonry-img { width: 100%; background: var(--ink3); height: 140px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.masonry-body { padding: 14px; }
+.masonry-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+.masonry-meta { font-size: 12px; color: var(--muted); }
+
+/* ════════════════════════════════════
+   EVENTS PAGE
+════════════════════════════════════ */
+.events-page-header { padding: 40px; border-bottom: 1px solid var(--line); }
+.events-page-title { font-family: var(--font-display); font-size: 56px; letter-spacing: 2px; color: var(--white); line-height: 0.9; margin-bottom: 12px; }
+.events-page-sub { font-size: 15px; color: var(--muted); }
+.events-featured { padding: 32px 40px; background: var(--ink2); border-bottom: 1px solid var(--line); }
+.event-featured-card {
+  background: var(--surface);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-xl);
+  padding: 32px;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 32px; align-items: center;
+  position: relative; overflow: hidden;
+}
+.event-featured-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--v), var(--coral), var(--gold)); }
+.event-featured-title { font-family: var(--font-display); font-size: 40px; letter-spacing: 1px; color: var(--white); margin-bottom: 8px; }
+.event-featured-desc { font-size: 15px; color: var(--body); margin-bottom: 20px; line-height: 1.6; }
+.event-prize-big { font-family: var(--font-display); font-size: 48px; letter-spacing: 1px; color: var(--gold); line-height: 1; }
+.event-prize-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+.event-meta-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.event-meta-item { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.event-meta-icon { font-size: 15px; }
+
+.events-list { padding: 28px 40px; }
+.events-list-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.event-list-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: 24px;
+  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+}
+.event-list-card:hover { border-color: var(--v); transform: translateY(-3px); }
+.event-list-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.event-list-card:nth-child(1)::after { background: var(--teal); }
+.event-list-card:nth-child(2)::after { background: var(--gold); }
+.event-list-card:nth-child(3)::after { background: var(--v2); }
+.event-list-card:nth-child(4)::after { background: var(--coral); }
+
+/* ════════════════════════════════════
+   WALLET PAGE
+════════════════════════════════════ */
+.wallet-hero {
+  padding: 40px; background: var(--ink2); border-bottom: 1px solid var(--line);
+}
+.wallet-balance-card {
+  background: var(--surface); border: 1px solid var(--line2);
+  border-radius: var(--r-xl); padding: 32px;
+  max-width: 600px; position: relative; overflow: hidden;
+}
+.wallet-balance-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 10% 50%, rgba(232,160,48,0.1) 0%, transparent 60%); pointer-events: none; }
+.wallet-amount { font-family: var(--font-display); font-size: 72px; letter-spacing: 2px; color: var(--gold); line-height: 1; }
+.wallet-amount-label { font-size: 14px; color: var(--muted); margin-top: 4px; font-family: var(--font-jp); }
+.wallet-actions-row { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+.wallet-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+.wallet-stat { background: var(--ink3); border-radius: var(--r-md); padding: 16px; }
+.wallet-stat-num { font-family: var(--font-display); font-size: 28px; color: var(--white); display: block; }
+.wallet-stat-lbl { font-size: 12px; color: var(--muted); }
+
+.tx-list { padding: 28px 40px; }
+.tx-section-title { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 16px; }
+.tx-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.tx-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.tx-earn { background: rgba(29,168,128,0.15); }
+.tx-send { background: rgba(124,111,205,0.15); }
+.tx-receive { background: rgba(232,160,48,0.15); }
+.tx-details { flex: 1; }
+.tx-desc { font-size: 14px; color: var(--white); font-weight: 500; }
+.tx-time { font-size: 12px; color: var(--muted); font-family: var(--font-jp); }
+.tx-amount { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.5px; }
+.tx-plus { color: var(--teal); }
+.tx-minus { color: var(--coral); }
+
+/* ════════════════════════════════════
+   ARCHITECTURE PAGE
+════════════════════════════════════ */
+.arch-page { padding: 40px; }
+.arch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+.arch-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: 24px;
+  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+}
+.arch-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.arch-card:hover { border-color: var(--v); transform: translateY(-3px); }
+.arch-card-icon { font-size: 32px; margin-bottom: 14px; display: block; }
+.arch-card-title { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.arch-card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+.arch-card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.arch-tag { font-size: 11px; padding: 3px 8px; border-radius: 20px; background: rgba(255,255,255,0.06); color: var(--muted); }
+
+.arch-detail {
+  background: var(--ink2); border: 1px solid var(--line2);
+  border-radius: var(--r-xl); padding: 32px; margin-top: 24px;
+  display: none;
+}
+.arch-detail.open { display: block; animation: fade-up 0.3s ease; }
+.arch-detail-title { font-family: var(--font-display); font-size: 40px; letter-spacing: 1px; margin-bottom: 16px; }
+.arch-detail-body { font-size: 15px; color: var(--body); line-height: 1.75; }
+.arch-detail-body h4 { font-size: 14px; font-weight: 700; color: var(--v2); text-transform: uppercase; letter-spacing: 0.08em; margin: 20px 0 8px; }
+.arch-detail-body ul { padding-left: 20px; margin-bottom: 12px; }
+.arch-detail-body li { margin-bottom: 6px; color: var(--body); }
+.arch-detail-body code { background: var(--ink3); padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 13px; color: var(--v2); }
+.arch-flow-steps { display: flex; gap: 0; margin: 20px 0; flex-wrap: wrap; }
+.arch-flow-step { background: var(--surface); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 12px 16px; font-size: 13px; color: var(--body); position: relative; }
+.arch-flow-step:not(:last-child)::after { content: '→'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%); color: var(--v2); font-weight: 700; z-index: 1; }
+.arch-flow-step + .arch-flow-step { margin-left: 20px; }
+
+/* ════════════════════════════════════
+   SEND COINS MODAL
+════════════════════════════════════ */
+.coin-input-wrap { position: relative; }
+.coin-input-prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gold); font-weight: 700; font-size: 16px; }
+.coin-input-field { padding-left: 36px !important; }
+.user-search-result { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--r-sm); cursor: pointer; transition: background 0.2s; margin-top: 4px; }
+.user-search-result:hover { background: rgba(255,255,255,0.06); }
+
+/* ════════════════════════════════════
+   NOTIFICATION DOT
+════════════════════════════════════ */
+.notif-dot { width: 8px; height: 8px; background: var(--coral); border-radius: 50%; display: inline-block; margin-left: 4px; vertical-align: middle; }
+
+/* ════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════ */
+@media (max-width: 900px) {
+  nav { padding: 14px 20px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .hero-visual { display: none; }
+  .hero-title { font-size: 64px; }
+  .features-strip, .coin-section, .proof-section { padding: 60px 24px; }
+  .events-section, .ranking-section { padding: 60px 24px; }
+  .features-grid, .events-grid, .proof-grid { grid-template-columns: 1fr; }
+  .ranking-section, .coin-inner { grid-template-columns: 1fr; gap: 40px; }
+  .cta-section { padding: 80px 24px; }
+  footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+  .sidebar { display: none; }
+  .main-content { margin-left: 0; }
+  .right-panel { display: none; }
+  .arch-grid { grid-template-columns: 1fr; }
+  .events-list-grid { grid-template-columns: 1fr; }
+  .event-featured-card { grid-template-columns: 1fr; }
+  .profile-info-row { padding: 0 20px 20px; }
+  .profile-body { padding: 20px; }
+  .profile-tabs { padding: 0 20px; overflow-x: auto; }
+  .posts-masonry { columns: 1; }
+  .wallet-hero, .tx-list, .events-featured, .events-list, .events-page-header { padding: 24px; }
+  .wallet-stat-grid { grid-template-columns: 1fr 1fr; }
+  .arch-page { padding: 24px; }
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--v3); }
+</style>
+</head>
+<body>
+
+<!-- ══ GLOBAL NAV ══ -->
+<nav id="global-nav">
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-mark">▲</div>
+    ANIMEVERSE
+  </div>
+  <ul class="nav-links" id="nav-links">
+    <li><button onclick="showPage('home')" class="active-nav" id="nav-home">Home</button></li>
+    <li><button onclick="showPage('feed')" id="nav-feed">Feed</button></li>
+    <li><button onclick="showPage('events')" id="nav-events">Events</button></li>
+    <li><button onclick="showPage('wallet')" id="nav-wallet">Wallet</button></li>
+    <li><button onclick="showPage('architecture')" id="nav-arch">Architecture</button></li>
+    <li><button onclick="openModal('signup-modal')" class="nav-cta">Join free →</button></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════
+     PAGE: HOME (LANDING)
+══════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      <span>Now live — join the community</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="line-1">POST.</span>
+      <span class="line-2">RANK.</span>
+      <span class="line-3">EARN.</span>
+    </h1>
+    <p class="hero-jp">アニメの世界へようこそ · Your anime. Your rank. Your rewards.</p>
+    <p class="hero-desc">AnimeVerse is the social platform where anime fans post art, AMVs, and reviews — then climb a live ranking system and earn real rewards for their passion.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="openModal('signup-modal')">
+        ＋ Start for free
+      </button>
+      <button class="btn-ghost" onclick="showPage('feed')">See the feed →</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">5</span>
+        <div class="hero-stat-lbl">Rank tiers</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">AniCoins</span>
+        <div class="hero-stat-lbl">Real rewards</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">∞</span>
+        <div class="hero-stat-lbl">Events & contests</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="rank-card legend" onclick="showPage('feed')">
+      <div class="rank-icon">🔥</div>
+      <div style="flex:1;">
+        <div class="rank-name">LEGEND</div>
+        <div class="rank-pts">100,000+ Aura pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+    <div class="rank-card platinum" onclick="showPage('feed')">
+      <div class="rank-icon">⚡</div>
+      <div style="flex:1;">
+        <div class="rank-name">PLATINUM</div>
+        <div class="rank-pts">20,000 – 99,999 pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+    <div class="rank-card gold" onclick="showPage('feed')">
+      <div class="rank-icon">⭐</div>
+      <div style="flex:1;">
+        <div class="rank-name">GOLD</div>
+        <div class="rank-pts">5,000 – 19,999 pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+    <div class="rank-card silver" onclick="showPage('feed')">
+      <div class="rank-icon">🌙</div>
+      <div style="flex:1;">
+        <div class="rank-name">SILVER</div>
+        <div class="rank-pts">1,000 – 4,999 pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+    <div class="rank-card bronze" onclick="showPage('feed')">
+      <div class="rank-icon">🌱</div>
+      <div style="flex:1;">
+        <div class="rank-name">BRONZE</div>
+        <div class="rank-pts">0 – 999 pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features-strip" id="features">
+  <div class="features-strip-inner">
+    <div class="strip-label">Everything you need</div>
+    <div class="strip-title">Built for <em>real</em> anime fans</div>
+    <div class="features-grid">
+      <div class="feature-cell" onclick="showPage('feed')">
+        <div class="feature-icon-wrap f-purple">🎨</div>
+        <h3>Post anything anime</h3>
+        <p>Fan-art, AMVs, episode reviews, memes, cosplay. Every post earns you Aura Points based on views and engagement.</p>
+      </div>
+      <div class="feature-cell" onclick="showPage('feed')">
+        <div class="feature-icon-wrap f-gold">🏆</div>
+        <h3>Live ranking system</h3>
+        <p>Climb from Bronze to Legend through 5 tiers. Your rank updates in real time as your content gets views and tips.</p>
+      </div>
+      <div class="feature-cell" onclick="showPage('wallet')">
+        <div class="feature-icon-wrap f-teal">💰</div>
+        <h3>Earn real rewards</h3>
+        <p>Top creators earn AniCoins from views, tips, and event prizes. Legend rank users can cash out to real money.</p>
+      </div>
+      <div class="feature-cell" onclick="showPage('events')">
+        <div class="feature-icon-wrap f-coral">🎉</div>
+        <h3>Events & contests</h3>
+        <p>Weekly sponsored art contests, AMV battles, and live watch parties. Win AniCoins and studio collaborations.</p>
+      </div>
+      <div class="feature-cell" onclick="showPage('profile')">
+        <div class="feature-icon-wrap f-blue">📋</div>
+        <h3>Anime watchlist</h3>
+        <p>Track what you're watching, completed, and plan to watch. Discover what creators you follow are watching too.</p>
+      </div>
+      <div class="feature-cell" onclick="showPage('feed')">
+        <div class="feature-icon-wrap f-pink">👥</div>
+        <h3>True community</h3>
+        <p>Follow creators, tip their work with AniCoins, join your nakama. This is the home anime fans always deserved.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ranking" style="padding: 0; overflow: hidden;">
+  <div class="ranking-section">
+    <div>
+      <div class="section-label">Ranking system</div>
+      <h2 class="section-title">CLIMB.<br>EVERY.<br>LEVEL.</h2>
+      <p class="section-body">Every post, every view, every tip adds Aura Points to your profile. Your rank updates live — and with each tier comes new perks, higher visibility, and bigger rewards.</p>
+      <button class="btn-primary" onclick="showPage('profile')">See your rank →</button>
+    </div>
+    <div class="tier-list">
+      <div class="tier-item">
+        <div class="tier-dot t-legend"></div>
+        <div class="tier-name">Legend</div>
+        <div class="tier-range">100,000+ pts · top 0.1%</div>
+        <div class="tier-perk">Cash-out enabled</div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot t-platinum"></div>
+        <div class="tier-name">Platinum</div>
+        <div class="tier-range">20,000 – 99,999 pts</div>
+        <div class="tier-perk">Studio access</div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot t-gold"></div>
+        <div class="tier-name">Gold</div>
+        <div class="tier-range">5,000 – 19,999 pts</div>
+        <div class="tier-perk">Event priority</div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot t-silver"></div>
+        <div class="tier-name">Silver</div>
+        <div class="tier-range">1,000 – 4,999 pts</div>
+        <div class="tier-perk">Custom tags</div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot t-bronze"></div>
+        <div class="tier-name">Bronze</div>
+        <div class="tier-range">0 – 999 pts</div>
+        <div class="tier-perk">Start here</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="coin-section">
+  <div class="coin-inner">
+    <div>
+      <div class="section-label" style="color:var(--gold)">AniCoin economy</div>
+      <h2 class="section-title">EARN.<br>TIP.<br>WITHDRAW.</h2>
+      <p class="section-body">AniCoins are the platform currency. Earn them through content views and event wins. Send them to creators you love. Legend rank users can withdraw real money.</p>
+      <button class="btn-primary btn-gold" onclick="showPage('wallet')">Open Wallet →</button>
+    </div>
+    <div class="coin-cards">
+      <div class="coin-card">
+        <span class="coin-card-icon">🎨</span>
+        <span class="coin-card-num">+pts</span>
+        <div class="coin-card-lbl">Every view on your post earns Aura Points</div>
+      </div>
+      <div class="coin-card">
+        <span class="coin-card-icon">💸</span>
+        <span class="coin-card-num">8%</span>
+        <div class="coin-card-lbl">Platform fee on tips — you keep the rest</div>
+      </div>
+      <div class="coin-card">
+        <span class="coin-card-icon">🏆</span>
+        <span class="coin-card-num">5K+</span>
+        <div class="coin-card-lbl">AniCoins in monthly event prize pools</div>
+      </div>
+      <div class="coin-card">
+        <span class="coin-card-icon">💳</span>
+        <span class="coin-card-num">UPI</span>
+        <div class="coin-card-lbl">Cash out via Razorpay (Legend rank only)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="events-section" id="events-home">
+  <div class="section-label" style="color:var(--gold)">Events & contests</div>
+  <h2 class="section-title" style="font-family:var(--font-display);font-size:clamp(40px,6vw,72px);letter-spacing:1px;margin-bottom:12px;">COMPETE. WIN. REPEAT.</h2>
+  <p style="font-size:15px;color:var(--muted);max-width:520px;margin:0 auto;line-height:1.7">Sponsored art contests, AMV battles, live watch parties — every week brings a new chance to earn AniCoins and get discovered by studios.</p>
+  <div class="events-grid">
+    <div class="event-card" onclick="showPage('events')">
+      <div class="event-status status-live">● Live now</div>
+      <h3>Spring Art Festival 2026</h3>
+      <p>Fan-art contest sponsored by Crunchyroll India. Any anime, any style. Top 3 win coins + featured placement.</p>
+      <div class="event-prize">
+        <div class="event-prize-coin">A</div>
+        50,000 AniCoins prize pool
+      </div>
+    </div>
+    <div class="event-card" onclick="showPage('events')">
+      <div class="event-status status-soon">Coming soon</div>
+      <h3>AMV Weekly Battle</h3>
+      <p>Best AMV of the week gets featured on the platform homepage and earns bonus Aura Points for 7 days.</p>
+      <div class="event-prize">
+        <div class="event-prize-coin">A</div>
+        12,000 AniCoins + spotlight
+      </div>
+    </div>
+    <div class="event-card" onclick="showPage('events')">
+      <div class="event-status status-open">Open entry</div>
+      <h3>Mappa Collab Contest</h3>
+      <p>Studio-sponsored contest — winner gets official collaboration credit and their art used in promotional material.</p>
+      <div class="event-prize">
+        <div class="event-prize-coin">A</div>
+        25,000 coins + studio deal
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="proof-section">
+  <div class="proof-inner">
+    <div class="section-label" style="text-align:center">What creators say</div>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <p class="proof-quote">"I've been posting anime art for 3 years. AnimeVerse is the first platform where I actually feel like the community sees my work — and rewards it."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:rgba(124,111,205,0.25);color:var(--v2)">SH</div>
+          <div><div class="proof-name">SakuraHaze</div><div class="proof-handle">Legend · 284K followers</div></div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <p class="proof-quote">"Climbed from Bronze to Gold in 2 months just by posting consistently. The ranking system actually makes you want to create more — it's addictive."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:rgba(232,160,48,0.25);color:var(--gold)">KY</div>
+          <div><div class="proof-name">KaijuYuki</div><div class="proof-handle">Gold · 48K followers</div></div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <p class="proof-quote">"Won the Spring Art Fest and my art was shared by Crunchyroll India. Three months later I have a studio collaboration."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:rgba(29,168,128,0.25);color:var(--teal)">MR</div>
+          <div><div class="proof-name">MechaDragon</div><div class="proof-handle">Platinum · 92K followers</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>YOUR<br><em>LEGEND</em><br>STARTS NOW</h2>
+  <p>Join thousands of anime creators already ranking up, earning AniCoins, and competing in events every week.</p>
+  <div class="cta-actions">
+    <button class="btn-primary" style="font-size:16px;padding:17px 38px" onclick="openModal('signup-modal')">Create free account →</button>
+  </div>
+  <div class="login-row">
+    <span style="font-size:13px;color:var(--muted)">Or sign in with</span>
+    <button class="login-oauth-btn" onclick="quickLogin('Discord')">
+      <div class="oauth-icon-wrap discord-bg">D</div> Discord
+    </button>
+    <button class="login-oauth-btn" onclick="quickLogin('Google')">
+      <div class="oauth-icon-wrap google-bg">G</div> Google
+    </button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">ANIMEVERSE</div>
+  <ul class="footer-links">
+    <li><button onclick="showPage('feed')">Feed</button></li>
+    <li><button onclick="showPage('events')">Events</button></li>
+    <li><button onclick="showPage('wallet')">Wallet</button></li>
+    <li><button onclick="showPage('architecture')">Architecture</button></li>
+    <li><button onclick="openModal('terms-modal')">Terms</button></li>
+    <li><button onclick="openModal('privacy-modal')">Privacy</button></li>
+  </ul>
+  <div class="footer-copy">© 2026 AnimeVerse · アニメバース</div>
+</footer>
+</div><!-- end page-home -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE: FEED
+══════════════════════════════════════ -->
+<div class="page" id="page-feed">
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Navigate</div>
+        <button class="sidebar-btn active" onclick="showPage('feed')">
+          <span class="sidebar-icon">🏠</span> Feed
+        </button>
+        <button class="sidebar-btn" onclick="showPage('events')">
+          <span class="sidebar-icon">🎉</span> Events
+          <span class="notif-dot"></span>
+        </button>
+        <button class="sidebar-btn" onclick="showPage('wallet')">
+          <span class="sidebar-icon">💰</span> Wallet
+        </button>
+        <button class="sidebar-btn" onclick="showPage('profile')">
+          <span class="sidebar-icon">👤</span> My Profile
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Discover</div>
+        <button class="sidebar-btn" onclick="filterFeed('trending')">
+          <span class="sidebar-icon">🔥</span> Trending
+        </button>
+        <button class="sidebar-btn" onclick="filterFeed('top')">
+          <span class="sidebar-icon">👑</span> Top Creators
+        </button>
+        <button class="sidebar-btn" onclick="filterFeed('art')">
+          <span class="sidebar-icon">🎨</span> Fan Art
+        </button>
+        <button class="sidebar-btn" onclick="filterFeed('amv')">
+          <span class="sidebar-icon">🎬</span> AMVs
+        </button>
+        <button class="sidebar-btn" onclick="filterFeed('reviews')">
+          <span class="sidebar-icon">📝</span> Reviews
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Following</div>
+        <button class="sidebar-btn" onclick="showProfile('SakuraHaze')">
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(124,111,205,0.4);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">SH</div>
+          SakuraHaze
+          <span style="margin-left:auto;font-size:11px;color:var(--coral)">🔥</span>
+        </button>
+        <button class="sidebar-btn" onclick="showProfile('KaijuYuki')">
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(232,160,48,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">KY</div>
+          KaijuYuki
+        </button>
+        <button class="sidebar-btn" onclick="showProfile('MechaDragon')">
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(29,168,128,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">MD</div>
+          MechaDragon
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Explore</div>
+        <button class="sidebar-btn" onclick="showPage('architecture')">
+          <span class="sidebar-icon">🏗️</span> Architecture
+        </button>
+      </div>
+
+      <!-- Sidebar user -->
+      <div class="sidebar-user" onclick="showPage('profile')">
+        <div class="sidebar-avatar">YA</div>
+        <div>
+          <div class="sidebar-uname">YourAnime</div>
+          <div class="sidebar-rank-badge">⭐ Gold · 7,240 pts</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Feed -->
+    <div class="main-content">
+      <!-- Composer -->
+      <div class="post-composer">
+        <div class="composer-row">
+          <div class="composer-avatar">YA</div>
+          <textarea class="composer-input" id="composer-text" placeholder="Share your anime thoughts, art, or review..." rows="3"></textarea>
+        </div>
+        <div class="composer-actions">
+          <div class="composer-tools">
+            <button class="composer-tool" title="Upload image" onclick="showToast('📷 Image upload ready','Image uploader would open here')">🖼️</button>
+            <button class="composer-tool" title="Add tag" onclick="addTag()">🏷️</button>
+            <button class="composer-tool" title="Add anime" onclick="showToast('🎌 Anime Tagger','Tag an anime title to your post')">🎌</button>
+            <button class="composer-tool" title="Poll" onclick="showToast('📊 Poll Creator','Create a poll for your followers')">📊</button>
+          </div>
+          <button class="btn-primary" style="font-size:13px;padding:9px 20px" onclick="submitPost()">Post →</button>
+        </div>
+      </div>
+
+      <!-- Feed Filters -->
+      <div class="feed-filters">
+        <button class="filter-btn active" onclick="setFeedFilter(this,'all')">All Posts</button>
+        <button class="filter-btn" onclick="setFeedFilter(this,'art')">🎨 Art</button>
+        <button class="filter-btn" onclick="setFeedFilter(this,'amv')">🎬 AMV</button>
+        <button class="filter-btn" onclick="setFeedFilter(this,'review')">📝 Reviews</button>
+        <button class="filter-btn" onclick="setFeedFilter(this,'cosplay')">✨ Cosplay</button>
+        <button class="filter-btn" onclick="setFeedFilter(this,'meme')">😂 Memes</button>
+      </div>
+
+      <!-- Feed Posts -->
+      <div id="feed-posts">
+
+        <!-- Post 1 -->
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar" style="background:rgba(216,90,48,0.25);color:var(--coral)" onclick="showPage('profile')">SH</div>
+            <div class="post-meta">
+              <div><span class="post-author" onclick="showPage('profile')">SakuraHaze</span><span class="post-rank-badge badge-legend">🔥 LEGEND</span></div>
+              <div class="post-time">2 minutes ago · Fan Art</div>
+            </div>
+            <button class="post-more" onclick="showPostMenu(this)">⋯</button>
+          </div>
+          <div class="post-body">Just finished this Jujutsu Kaisen fanart for the Spring Art Festival! Spent 14 hours on the linework alone 😭 Sukuna's domain expansion was absolutely worth the effort. Vote for me if you like it! 🙏</div>
+          <div class="post-image-placeholder">🎨</div>
+          <div class="post-tags">
+            <span class="post-tag">#JJK</span>
+            <span class="post-tag">#FanArt</span>
+            <span class="post-tag">#SpringArtFest</span>
+            <span class="post-tag">#Sukuna</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn" onclick="likePost(this)">❤️ <span class="like-count">2,847</span></button>
+            <button class="post-action-btn" onclick="showToast('💬 Comments','Comments section would expand here')">💬 384</button>
+            <button class="post-action-btn" onclick="showToast('↗️ Shared!','Post link copied to clipboard')">↗️ Share</button>
+            <button class="post-action-btn" onclick="openTipModal('SakuraHaze')">💰 Tip</button>
+            <div class="post-action-spacer"></div>
+            <div class="post-views">👁️ 48,291 views</div>
+          </div>
+        </div>
+
+        <!-- Post 2 -->
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar" style="background:rgba(29,168,128,0.25);color:var(--teal)" onclick="showPage('profile')">MD</div>
+            <div class="post-meta">
+              <div><span class="post-author" onclick="showPage('profile')">MechaDragon</span><span class="post-rank-badge badge-platinum">⚡ PLATINUM</span></div>
+              <div class="post-time">18 minutes ago · Review</div>
+            </div>
+            <button class="post-more" onclick="showPostMenu(this)">⋯</button>
+          </div>
+          <div class="post-body">
+            <strong style="color:var(--white)">Dungeon Meshi Ep 24 — my honest review (no spoilers)</strong><br><br>
+            This episode perfectly captures why this series is a masterpiece. The way it balances comedy, genuine emotional weight, and its food philosophy... Studio Trigger delivered something completely different from their usual style and it works perfectly. 10/10. This is the best fantasy anime in years.
+          </div>
+          <div class="post-tags">
+            <span class="post-tag">#DungeonMeshi</span>
+            <span class="post-tag">#Review</span>
+            <span class="post-tag">#Anime2026</span>
+            <span class="post-tag">#Trigger</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn liked" onclick="likePost(this)">❤️ <span class="like-count">1,203</span></button>
+            <button class="post-action-btn" onclick="showToast('💬 Comments','128 comments on this review')">💬 128</button>
+            <button class="post-action-btn" onclick="showToast('↗️ Shared!','Post link copied to clipboard')">↗️ Share</button>
+            <button class="post-action-btn" onclick="openTipModal('MechaDragon')">💰 Tip</button>
+            <div class="post-action-spacer"></div>
+            <div class="post-views">👁️ 12,440 views</div>
+          </div>
+        </div>
+
+        <!-- Post 3 -->
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar" style="background:rgba(232,160,48,0.25);color:var(--gold)" onclick="showPage('profile')">KY</div>
+            <div class="post-meta">
+              <div><span class="post-author" onclick="showPage('profile')">KaijuYuki</span><span class="post-rank-badge badge-gold">⭐ GOLD</span></div>
+              <div class="post-time">1 hour ago · AMV</div>
+            </div>
+            <button class="post-more" onclick="showPostMenu(this)">⋯</button>
+          </div>
+          <div class="post-body">New AMV dropped! Attack on Titan × Resonance — took me 3 weeks of editing. The sync points on the beat drop hit different. Link in comments. Entering this in the AMV Weekly Battle 🎬</div>
+          <div class="post-image-placeholder">🎬</div>
+          <div class="post-tags">
+            <span class="post-tag">#AMV</span>
+            <span class="post-tag">#AttackOnTitan</span>
+            <span class="post-tag">#AMVBattle</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn" onclick="likePost(this)">❤️ <span class="like-count">876</span></button>
+            <button class="post-action-btn" onclick="showToast('💬 Comments','67 comments')">💬 67</button>
+            <button class="post-action-btn" onclick="showToast('↗️ Shared!','Post link copied to clipboard')">↗️ Share</button>
+            <button class="post-action-btn" onclick="openTipModal('KaijuYuki')">💰 Tip</button>
+            <div class="post-action-spacer"></div>
+            <div class="post-views">👁️ 9,182 views</div>
+          </div>
+        </div>
+
+        <!-- Post 4 -->
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar" style="background:rgba(124,111,205,0.3);color:var(--v2)">RN</div>
+            <div class="post-meta">
+              <div><span class="post-author">RinNakamura</span><span class="post-rank-badge badge-silver">🌙 SILVER</span></div>
+              <div class="post-time">3 hours ago · Cosplay</div>
+            </div>
+            <button class="post-more" onclick="showPostMenu(this)">⋯</button>
+          </div>
+          <div class="post-body">My Nezuko cosplay from AniFest Mumbai 2026! Made the bamboo prop and kimono myself. This took 2 months of prep 🥹 Can't believe I won best costume this year!</div>
+          <div class="post-image-placeholder">✨</div>
+          <div class="post-tags">
+            <span class="post-tag">#Cosplay</span>
+            <span class="post-tag">#Nezuko</span>
+            <span class="post-tag">#DemonSlayer</span>
+            <span class="post-tag">#AniFest2026</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn" onclick="likePost(this)">❤️ <span class="like-count">2,104</span></button>
+            <button class="post-action-btn" onclick="showToast('💬 Comments','294 comments')">💬 294</button>
+            <button class="post-action-btn" onclick="showToast('↗️ Shared!','Shared!')">↗️ Share</button>
+            <button class="post-action-btn" onclick="openTipModal('RinNakamura')">💰 Tip</button>
+            <div class="post-action-spacer"></div>
+            <div class="post-views">👁️ 31,500 views</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div style="width:300px;flex-shrink:0;padding:28px 20px 28px 0">
+      <!-- Leaderboard -->
+      <div class="widget">
+        <div class="widget-title">🏆 Weekly Top Creators</div>
+        <div class="leaderboard-item" onclick="showPage('profile')">
+          <div class="lb-rank top1">1</div>
+          <div class="lb-avatar" style="background:rgba(216,90,48,0.25);color:var(--coral)">SH</div>
+          <div class="lb-name">SakuraHaze</div>
+          <div class="lb-pts">284K pts</div>
+        </div>
+        <div class="leaderboard-item" onclick="showPage('profile')">
+          <div class="lb-rank top2">2</div>
+          <div class="lb-avatar" style="background:rgba(29,168,128,0.25);color:var(--teal)">MD</div>
+          <div class="lb-name">MechaDragon</div>
+          <div class="lb-pts">182K pts</div>
+        </div>
+        <div class="leaderboard-item" onclick="showPage('profile')">
+          <div class="lb-rank top3">3</div>
+          <div class="lb-avatar" style="background:rgba(232,160,48,0.25);color:var(--gold)">KY</div>
+          <div class="lb-name">KaijuYuki</div>
+          <div class="lb-pts">94K pts</div>
+        </div>
+        <div class="leaderboard-item">
+          <div class="lb-rank">4</div>
+          <div class="lb-avatar" style="background:rgba(124,111,205,0.25);color:var(--v2)">RN</div>
+          <div class="lb-name">RinNakamura</div>
+          <div class="lb-pts">41K pts</div>
+        </div>
+        <div class="leaderboard-item">
+          <div class="lb-rank">5</div>
+          <div class="lb-avatar" style="background:rgba(255,255,255,0.1);color:var(--muted)">YA</div>
+          <div class="lb-name">YourAnime <span style="font-size:10px;color:var(--v2)">(you)</span></div>
+          <div class="lb-pts">7.2K pts</div>
+        </div>
+        <button class="btn-ghost" style="width:100%;margin-top:12px;font-size:12px;padding:8px" onclick="showPage('feed')">Full leaderboard →</button>
+      </div>
+
+      <!-- Live Event -->
+      <div class="widget" style="border-color:rgba(29,168,128,0.3)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--teal);animation:pulse-dot 1.5s infinite"></div>
+          <div class="widget-title" style="margin:0;color:var(--teal)">LIVE EVENT</div>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px">Spring Art Festival 2026</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:14px">2,847 entries · 3 days left</div>
+        <div style="background:rgba(232,160,48,0.1);border:1px solid rgba(232,160,48,0.2);border-radius:var(--r-sm);padding:12px;margin-bottom:14px">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:2px">Prize Pool</div>
+          <div style="font-family:var(--font-display);font-size:28px;color:var(--gold);letter-spacing:1px">50,000 AniCoins</div>
+        </div>
+        <button class="btn-primary" style="width:100%;font-size:13px;padding:10px" onclick="showPage('events')">Enter Contest →</button>
+      </div>
+
+      <!-- Your Rank -->
+      <div class="widget" onclick="showPage('profile')" style="cursor:pointer">
+        <div class="widget-title">⭐ Your Rank Progress</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="font-family:var(--font-display);font-size:32px;color:var(--gold)">GOLD</div>
+          <div style="font-size:13px;color:var(--muted)">7,240 / 20,000 pts<br>to Platinum</div>
+        </div>
+        <div style="height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden">
+          <div style="width:36%;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px"></div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px">36% to Platinum · +120 pts today</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end page-feed -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE: PROFILE
+══════════════════════════════════════ -->
+<div class="page" id="page-profile">
+  <div style="padding-top:62px">
+    <div class="profile-header">
+      <div class="profile-cover">
+        <div class="profile-cover-pattern"></div>
+      </div>
+      <div class="profile-info-row">
+        <div class="profile-avatar-lg">YA</div>
+        <div class="profile-details">
+          <div class="profile-name">YOURANIME</div>
+          <div class="profile-handle">@youranime · アニメクリエイター · Mumbai, India</div>
+          <div class="profile-stats-row">
+            <div class="profile-stat"><span class="profile-stat-num">147</span><div class="profile-stat-lbl">Posts</div></div>
+            <div class="profile-stat"><span class="profile-stat-num">8.4K</span><div class="profile-stat-lbl">Followers</div></div>
+            <div class="profile-stat"><span class="profile-stat-num">312</span><div class="profile-stat-lbl">Following</div></div>
+            <div class="profile-stat"><span class="profile-stat-num" style="color:var(--gold)">7,240</span><div class="profile-stat-lbl">Aura Points</div></div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-primary" onclick="openModal('edit-profile-modal')">Edit Profile</button>
+          <button class="btn-ghost" onclick="showPage('wallet')">💰 Wallet</button>
+          <button class="btn-ghost" onclick="showToast('⚙️ Settings','Profile settings panel')">⚙️</button>
+        </div>
+      </div>
+
+      <div class="profile-rank-display">
+        <div class="rank-badge-lg rank-badge-gold">⭐ GOLD</div>
+        <div class="rank-progress-wrap">
+          <div class="rank-progress-label">
+            <span style="font-size:13px;color:var(--white);font-weight:600">7,240 pts</span>
+            <span style="font-size:13px;color:var(--muted)">20,000 pts for Platinum</span>
+          </div>
+          <div class="rank-progress-bar">
+            <div class="rank-progress-fill" style="width:36%"></div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--muted)">36% to Platinum · Top 8% globally</div>
+      </div>
+
+      <div class="profile-tabs">
+        <button class="profile-tab active" onclick="switchProfileTab(this,'posts')">Posts</button>
+        <button class="profile-tab" onclick="switchProfileTab(this,'art')">Art Gallery</button>
+        <button class="profile-tab" onclick="switchProfileTab(this,'watchlist')">Watchlist</button>
+        <button class="profile-tab" onclick="switchProfileTab(this,'rewards')">Rewards</button>
+        <button class="profile-tab" onclick="switchProfileTab(this,'about')">About</button>
+      </div>
+    </div>
+
+    <div class="profile-body" id="profile-tab-content">
+      <!-- Posts tab (default) -->
+      <div class="posts-masonry">
+        <div class="masonry-card" onclick="showToast('📖 Post opened','Full post view')">
+          <div class="masonry-img">🎨</div>
+          <div class="masonry-body">
+            <div class="masonry-title">My Naruto tribute art</div>
+            <div class="masonry-meta">❤️ 1,204 · 👁️ 14.2K</div>
+          </div>
+        </div>
+        <div class="masonry-card" onclick="showToast('📖 Post opened','Full post view')">
+          <div class="masonry-img" style="height:180px">📝</div>
+          <div class="masonry-body">
+            <div class="masonry-title">Top 10 isekai of 2026</div>
+            <div class="masonry-meta">❤️ 892 · 👁️ 8.7K</div>
+          </div>
+        </div>
+        <div class="masonry-card" onclick="showToast('📖 Post opened','Full post view')">
+          <div class="masonry-img" style="height:220px">🎬</div>
+          <div class="masonry-body">
+            <div class="masonry-title">Demon Slayer AMV — Breath of Fire</div>
+            <div class="masonry-meta">❤️ 3,441 · 👁️ 28.1K</div>
+          </div>
+        </div>
+        <div class="masonry-card" onclick="showToast('📖 Post opened','Full post view')">
+          <div class="masonry-img">✨</div>
+          <div class="masonry-body">
+            <div class="masonry-title">My Tanjiro cosplay at AniFest</div>
+            <div class="masonry-meta">❤️ 2,108 · 👁️ 19.4K</div>
+          </div>
+        </div>
+        <div class="masonry-card" onclick="showToast('📖 Post opened','Full post view')">
+          <div class="masonry-img" style="height:160px">🔥</div>
+          <div class="masonry-body">
+            <div class="masonry-title">One Piece final arc predictions</div>
+            <div class="masonry-meta">❤️ 576 · 👁️ 6.2K</div>
+          </div>
+        </div>
+        <div class="masonry-card" onclick="showToast('📖 Post opened','Full post view')">
+          <div class="masonry-img">😂</div>
+          <div class="masonry-body">
+            <div class="masonry-title">When the filler arc hits</div>
+            <div class="masonry-meta">❤️ 4,820 · 👁️ 62.3K</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end page-profile -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE: EVENTS
+══════════════════════════════════════ -->
+<div class="page" id="page-events">
+  <div style="padding-top:62px">
+
+    <div class="events-page-header">
+      <div class="events-page-title">EVENTS &<br>CONTESTS</div>
+      <div class="events-page-sub">Compete, win AniCoins, get discovered by studios</div>
+    </div>
+
+    <!-- Featured event -->
+    <div class="events-featured">
+      <div class="event-featured-card">
+        <div>
+          <div class="event-status status-live" style="margin-bottom:16px">● Live Now · 3 days left</div>
+          <div class="event-featured-title">SPRING ART FESTIVAL 2026</div>
+          <div class="event-featured-desc">Official fan-art contest sponsored by Crunchyroll India. Any anime, any style. Submit your best work and let the community vote. Top 10 entries get featured platform-wide.</div>
+          <div class="event-meta-row">
+            <div class="event-meta-item"><span class="event-meta-icon">👥</span> 2,847 entries</div>
+            <div class="event-meta-item"><span class="event-meta-icon">⏰</span> 3 days remaining</div>
+            <div class="event-meta-item"><span class="event-meta-icon">🎯</span> Fan Art category</div>
+            <div class="event-meta-item"><span class="event-meta-icon">🏢</span> Crunchyroll India</div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn-primary" onclick="enterEvent('Spring Art Festival 2026')">Submit Entry →</button>
+            <button class="btn-ghost" onclick="showToast('👁️ Viewing entries','Browse all 2,847 submissions')">Browse Entries</button>
+          </div>
+        </div>
+        <div style="text-align:center;flex-shrink:0">
+          <div class="event-prize-big">50,000</div>
+          <div class="event-prize-label">AniCoins · Prize Pool</div>
+          <div style="margin-top:16px;font-size:13px;color:var(--muted)">🥇 25,000 · 🥈 15,000 · 🥉 10,000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Events list -->
+    <div class="events-list">
+      <div style="font-size:20px;font-weight:700;color:var(--white);margin-bottom:20px">All Events</div>
+      <div class="events-list-grid">
+        <div class="event-list-card" onclick="enterEvent('AMV Weekly Battle')">
+          <div class="event-status status-soon">Coming Soon · 5 days</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">AMV Weekly Battle</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Best AMV of the week gets homepage featured + 7 days of boosted visibility. Any series, any song.</p>
+          <div class="event-prize">
+            <div class="event-prize-coin">A</div>
+            12,000 AniCoins + spotlight
+          </div>
+        </div>
+
+        <div class="event-list-card" onclick="enterEvent('Mappa Collab Contest')">
+          <div class="event-status status-open">Open Entry</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">Mappa Collab Contest</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Studio-sponsored. Winner gets official collaboration credit and art used in actual promotional material.</p>
+          <div class="event-prize">
+            <div class="event-prize-coin">A</div>
+            25,000 coins + studio deal
+          </div>
+        </div>
+
+        <div class="event-list-card" onclick="enterEvent('Cosplay Championship')">
+          <div class="event-status status-soon">Opens in 2 weeks</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">Cosplay Championship</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Best cosplay photo from any anime. Judged by community vote + special jury from AniFest India.</p>
+          <div class="event-prize">
+            <div class="event-prize-coin">A</div>
+            18,000 AniCoins + AniFest pass
+          </div>
+        </div>
+
+        <div class="event-list-card" onclick="enterEvent('Review Royale')">
+          <div class="event-status status-open">Open Entry · 10 days left</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">Review Royale</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Best anime review of the month. Scored on depth, originality and community engagement. Any 2026 series.</p>
+          <div class="event-prize">
+            <div class="event-prize-coin">A</div>
+            8,000 AniCoins + verified badge
+          </div>
+        </div>
+      </div>
+
+      <!-- Past Events -->
+      <div style="margin-top:40px;padding-top:32px;border-top:1px solid var(--line)">
+        <div style="font-size:16px;font-weight:700;color:var(--muted);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em">Past Events</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:16px;padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md)">
+            <div style="font-size:20px">🏆</div>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--white)">Winter Art Championship 2025</div><div style="font-size:12px;color:var(--muted)">Won by SakuraHaze · 3,241 entries</div></div>
+            <div style="font-size:13px;color:var(--gold)">50,000 AniCoins awarded</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md)">
+            <div style="font-size:20px">🎬</div>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--white)">AMV Tournament Finals 2025</div><div style="font-size:12px;color:var(--muted)">Won by KaijuYuki · 891 entries</div></div>
+            <div style="font-size:13px;color:var(--gold)">20,000 AniCoins awarded</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end page-events -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE: WALLET
+══════════════════════════════════════ -->
+<div class="page" id="page-wallet">
+  <div style="padding-top:62px">
+
+    <div class="wallet-hero">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">Your AniCoin Wallet</div>
+      <div class="wallet-balance-card">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:4px;font-family:var(--font-jp)">Available Balance</div>
+        <div class="wallet-amount" id="wallet-balance">2,840</div>
+        <div class="wallet-amount-label">AniCoins · ≈ ₹284 at current rate</div>
+        <div class="wallet-actions-row">
+          <button class="btn-primary btn-gold" onclick="openModal('send-coins-modal')">💸 Send Coins</button>
+          <button class="btn-ghost" onclick="openModal('topup-modal')">➕ Top Up</button>
+          <button class="btn-ghost" onclick="openModal('withdraw-modal')">🏦 Withdraw</button>
+        </div>
+        <div class="wallet-stat-grid">
+          <div class="wallet-stat">
+            <span class="wallet-stat-num" style="color:var(--teal)">+12,480</span>
+            <div class="wallet-stat-lbl">Total Earned</div>
+          </div>
+          <div class="wallet-stat">
+            <span class="wallet-stat-num" style="color:var(--coral)">−9,640</span>
+            <div class="wallet-stat-lbl">Total Sent</div>
+          </div>
+          <div class="wallet-stat">
+            <span class="wallet-stat-num">2,840</span>
+            <div class="wallet-stat-lbl">Balance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tx-list">
+      <div style="background:rgba(232,160,48,0.08);border:1px solid rgba(232,160,48,0.2);border-radius:var(--r-md);padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px">
+        <div style="font-size:20px">🔒</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--gold)">Legend rank required to cash out</div>
+          <div style="font-size:13px;color:var(--muted)">You need 100,000 Aura Points to unlock UPI withdrawal. You're at 7,240 pts. Keep creating!</div>
+        </div>
+        <button class="btn-ghost" style="font-size:12px;padding:8px 14px;white-space:nowrap" onclick="showPage('feed')">Post to earn</button>
+      </div>
+
+      <div class="tx-section-title">Recent Transactions</div>
+
+      <div class="tx-item">
+        <div class="tx-icon tx-earn">💎</div>
+        <div class="tx-details">
+          <div class="tx-desc">Event bonus — Spring Art Festival entry</div>
+          <div class="tx-time">Today, 2:14 PM</div>
+        </div>
+        <div class="tx-amount tx-plus">+500</div>
+      </div>
+      <div class="tx-item">
+        <div class="tx-icon tx-receive">💛</div>
+        <div class="tx-details">
+          <div class="tx-desc">Tip from SakuraHaze</div>
+          <div class="tx-time">Today, 11:30 AM</div>
+        </div>
+        <div class="tx-amount tx-plus">+200</div>
+      </div>
+      <div class="tx-item">
+        <div class="tx-icon tx-earn">👁️</div>
+        <div class="tx-details">
+          <div class="tx-desc">View rewards — Naruto tribute art (14.2K views)</div>
+          <div class="tx-time">Yesterday, 9:00 PM</div>
+        </div>
+        <div class="tx-amount tx-plus">+142</div>
+      </div>
+      <div class="tx-item">
+        <div class="tx-icon tx-send">💸</div>
+        <div class="tx-details">
+          <div class="tx-desc">Tip sent to KaijuYuki</div>
+          <div class="tx-time">Yesterday, 3:22 PM</div>
+        </div>
+        <div class="tx-amount tx-minus">−100</div>
+      </div>
+      <div class="tx-item">
+        <div class="tx-icon tx-earn">🏆</div>
+        <div class="tx-details">
+          <div class="tx-desc">Weekly rank bonus — Gold tier</div>
+          <div class="tx-time">Mar 18, 2026</div>
+        </div>
+        <div class="tx-amount tx-plus">+350</div>
+      </div>
+      <div class="tx-item">
+        <div class="tx-icon tx-earn">👁️</div>
+        <div class="tx-details">
+          <div class="tx-desc">View rewards — Tanjiro cosplay (19.4K views)</div>
+          <div class="tx-time">Mar 17, 2026</div>
+        </div>
+        <div class="tx-amount tx-plus">+194</div>
+      </div>
+      <div class="tx-item">
+        <div class="tx-icon tx-send">💸</div>
+        <div class="tx-details">
+          <div class="tx-desc">Tip sent to MechaDragon</div>
+          <div class="tx-time">Mar 16, 2026</div>
+        </div>
+        <div class="tx-amount tx-minus">−50</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end page-wallet -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE: ARCHITECTURE
+══════════════════════════════════════ -->
+<div class="page" id="page-architecture">
+  <div style="padding-top:62px">
+    <div class="arch-page">
+      <div style="font-family:var(--font-display);font-size:52px;letter-spacing:2px;color:var(--white);line-height:0.9;margin-bottom:10px">PLATFORM<br>ARCHITECTURE</div>
+      <div style="font-size:15px;color:var(--muted);max-width:600px;margin-bottom:8px">Click any component to dive into technical implementation details, security practices, and code patterns.</div>
+
+      <div class="arch-grid">
+
+        <div class="arch-card" style="border-top-color:var(--v)" onclick="toggleArch('auth')" id="card-auth">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--v)"></div>
+          <span class="arch-card-icon">🔐</span>
+          <div class="arch-card-title">Auth Service</div>
+          <div class="arch-card-desc">JWT tokens, OAuth2 login via Google & Discord, 2FA via TOTP. Secure session management with refresh token rotation.</div>
+          <div class="arch-card-tags">
+            <span class="arch-tag">JWT</span><span class="arch-tag">OAuth2</span><span class="arch-tag">bcrypt</span><span class="arch-tag">2FA</span>
+          </div>
+          <div style="margin-top:14px;font-size:12px;color:var(--v2);font-weight:600">Click to expand →</div>
+        </div>
+
+        <div class="arch-card" onclick="toggleArch('post')" id="card-post">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--teal)"></div>
+          <span class="arch-card-icon">📝</span>
+          <div class="arch-card-title">Post & Feed Service</div>
+          <div class="arch-card-desc">Create, read, update, delete posts. Feed algorithm based on recency, engagement score, and followed creators.</div>
+          <div class="arch-card-tags">
+            <span class="arch-tag">PostgreSQL</span><span class="arch-tag">Redis</span><span class="arch-tag">S3</span><span class="arch-tag">CDN</span>
+          </div>
+          <div style="margin-top:14px;font-size:12px;color:var(--v2);font-weight:600">Click to expand →</div>
+        </div>
+
+        <div class="arch-card" onclick="toggleArch('rank')" id="card-rank">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)"></div>
+          <span class="arch-card-icon">🏆</span>
+          <div class="arch-card-title">Ranking Service</div>
+          <div class="arch-card-desc">Real-time Aura Point calculation. Redis sorted sets for live leaderboards. Tier promotion logic and badge assignment.</div>
+          <div class="arch-card-tags">
+            <span class="arch-tag">Redis ZADD</span><span class="arch-tag">Webhooks</span><span class="arch-tag">Cron jobs</span>
+          </div>
+          <div style="margin-top:14px;font-size:12px;color:var(--v2);font-weight:600">Click to expand →</div>
+        </div>
+
+        <div class="arch-card" onclick="toggleArch('reward')" id="card-reward">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)"></div>
+          <span class="arch-card-icon">💰</span>
+          <div class="arch-card-title">Reward / Coin Service</div>
+          <div class="arch-card-desc">AniCoin ledger with atomic transactions. Tip processing with 8% fee. Razorpay integration for Legend cash-out.</div>
+          <div class="arch-card-tags">
+            <span class="arch-tag">Ledger DB</span><span class="arch-tag">Razorpay</span><span class="arch-tag">Atomic TX</span>
+          </div>
+          <div style="margin-top:14px;font-size:12px;color:var(--v2);font-weight:600">Click to expand →</div>
+        </div>
+
+        <div class="arch-card" onclick="toggleArch('events')" id="card-events">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--coral)"></div>
+          <span class="arch-card-icon">🎉</span>
+          <div class="arch-card-title">Events Service</div>
+          <div class="arch-card-desc">Create and manage contests. Entry submission with image storage. Voting logic, winner selection and prize distribution.</div>
+          <div class="arch-card-tags">
+            <span class="arch-tag">Socket.io</span><span class="arch-tag">Cron</span><span class="arch-tag">Cloudinary</span>
+          </div>
+          <div style="margin-top:14px;font-size:12px;color:var(--v2);font-weight:600">Click to expand →</div>
+        </div>
+
+        <div class="arch-card" onclick="toggleArch('security')" id="card-security">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--coral)"></div>
+          <span class="arch-card-icon">🛡️</span>
+          <div class="arch-card-title">Security Layer</div>
+          <div class="arch-card-desc">API rate limiting, NSFW image detection, DDoS protection via Cloudflare. Input sanitization and SQL injection prevention.</div>
+          <div class="arch-card-tags">
+            <span class="arch-tag">Rate limit</span><span class="arch-tag">NSFW AI</span><span class="arch-tag">Cloudflare</span>
+          </div>
+          <div style="margin-top:14px;font-size:12px;color:var(--v2);font-weight:600">Click to expand →</div>
+        </div>
+
+      </div>
+
+      <!-- Detail Panels -->
+      <div class="arch-detail" id="arch-detail-auth">
+        <div class="arch-detail-title" style="color:var(--v2)">🔐 Auth Service Deep Dive</div>
+        <div class="arch-detail-body">
+          <h4>How Login Works</h4>
+          <p>Users can sign up with email/password or via OAuth2 (Google, Discord). Passwords are hashed with <code>bcrypt</code> (12 rounds). On login, the server issues two tokens:</p>
+          <ul>
+            <li><strong>Access Token</strong> — JWT, short-lived (15 minutes), stored in memory (not localStorage)</li>
+            <li><strong>Refresh Token</strong> — long-lived (30 days), stored in an httpOnly cookie, rotated on every use</li>
+          </ul>
+          <h4>OAuth2 Flow</h4>
+          <div class="arch-flow-steps">
+            <div class="arch-flow-step">User clicks Discord</div>
+            <div class="arch-flow-step">Redirect to Discord OAuth</div>
+            <div class="arch-flow-step">Discord returns code</div>
+            <div class="arch-flow-step">Server exchanges for token</div>
+            <div class="arch-flow-step">Create/link user in DB</div>
+            <div class="arch-flow-step">Issue JWT pair</div>
+          </div>
+          <h4>2FA Implementation</h4>
+          <p>Use <code>speakeasy</code> (Node.js) to generate TOTP secrets. User scans QR with Google Authenticator. On each login, server validates the 6-digit code with a 30-second window. Backup codes (10 one-time codes) are generated and stored hashed.</p>
+          <h4>Security Rules</h4>
+          <ul>
+            <li>Never store tokens in localStorage — XSS risk</li>
+            <li>All API endpoints require valid JWT in Authorization header</li>
+            <li>Failed login attempts trigger exponential backoff (5 attempts = 15 min lockout)</li>
+            <li>All passwords stored as bcrypt hashes — never plain text</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="arch-detail" id="arch-detail-post">
+        <div class="arch-detail-title" style="color:var(--teal)">📝 Post & Feed Service Deep Dive</div>
+        <div class="arch-detail-body">
+          <h4>Database Schema (PostgreSQL)</h4>
+          <ul>
+            <li><code>posts</code> — id, user_id, content, type, tags[], image_url, created_at</li>
+            <li><code>post_likes</code> — post_id, user_id, created_at (unique pair)</li>
+            <li><code>post_views</code> — post_id, viewer_id, viewed_at (deduplicated per 24h)</li>
+            <li><code>comments</code> — id, post_id, user_id, content, parent_id</li>
+          </ul>
+          <h4>Feed Algorithm</h4>
+          <p>The home feed is scored per-post: <code>score = (likes × 3) + (comments × 5) + (views × 0.1) + (recency_bonus)</code>. Posts from followed users get a 2× boost. Redis caches the top 100 feed posts per user for 5 minutes.</p>
+          <h4>Image Upload Flow</h4>
+          <div class="arch-flow-steps">
+            <div class="arch-flow-step">User selects image</div>
+            <div class="arch-flow-step">Client requests upload URL</div>
+            <div class="arch-flow-step">Server validates & signs S3 URL</div>
+            <div class="arch-flow-step">Client uploads directly to S3</div>
+            <div class="arch-flow-step">Cloudinary processes & CDN-serves</div>
+          </div>
+          <h4>Aura Point Triggers</h4>
+          <ul>
+            <li>Post published: +5 pts</li>
+            <li>Per unique view (after 3 seconds): +0.1 pts</li>
+            <li>Like received: +2 pts</li>
+            <li>Comment received: +3 pts</li>
+            <li>Tip received: +10 pts + coin value</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="arch-detail" id="arch-detail-rank">
+        <div class="arch-detail-title" style="color:var(--gold)">🏆 Ranking Service Deep Dive</div>
+        <div class="arch-detail-body">
+          <h4>Redis Sorted Set for Leaderboard</h4>
+          <p>Redis <code>ZADD leaderboard:weekly [score] [user_id]</code> updates in real time. <code>ZREVRANGE</code> retrieves the top-N users in O(log N). This handles millions of users with sub-millisecond reads.</p>
+          <h4>Tier Logic</h4>
+          <ul>
+            <li>Bronze: 0 – 999 pts</li>
+            <li>Silver: 1,000 – 4,999 pts → unlock custom profile tags</li>
+            <li>Gold: 5,000 – 19,999 pts → unlock event priority + profile badge</li>
+            <li>Platinum: 20,000 – 99,999 pts → unlock studio access + higher visibility</li>
+            <li>Legend: 100,000+ pts → unlock cash-out + creator fund eligibility</li>
+          </ul>
+          <h4>Rank Update Triggers</h4>
+          <div class="arch-flow-steps">
+            <div class="arch-flow-step">Engagement event fires</div>
+            <div class="arch-flow-step">Post service emits event</div>
+            <div class="arch-flow-step">Rank service consumes queue</div>
+            <div class="arch-flow-step">ZINCRBY in Redis</div>
+            <div class="arch-flow-step">Check tier threshold</div>
+            <div class="arch-flow-step">Push notification if promoted</div>
+          </div>
+          <h4>Anti-Fraud</h4>
+          <ul>
+            <li>View deduplication: same IP + user_id only counts once per 24h per post</li>
+            <li>Bot detection: views under 3 seconds session time are discarded</li>
+            <li>Point velocity check: users gaining >10,000 pts/hour are flagged for review</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="arch-detail" id="arch-detail-reward">
+        <div class="arch-detail-title" style="color:var(--gold)">💰 Reward / Coin Service Deep Dive</div>
+        <div class="arch-detail-body">
+          <h4>The Ledger Principle</h4>
+          <p>Every AniCoin transaction is an immutable record. We never modify a balance directly — we INSERT a new ledger row and SUM to get balance. This gives a full audit trail and prevents fraud.</p>
+          <h4>Ledger Schema</h4>
+          <ul>
+            <li><code>transactions</code> — id, from_user_id, to_user_id, amount, type, fee, created_at, reference_id</li>
+            <li>Types: <code>earn_view</code>, <code>earn_event</code>, <code>tip_sent</code>, <code>tip_received</code>, <code>withdrawal</code></li>
+            <li>Balance = <code>SUM(credit_amount) - SUM(debit_amount)</code> for a user</li>
+          </ul>
+          <h4>Tip Transaction Flow</h4>
+          <div class="arch-flow-steps">
+            <div class="arch-flow-step">User taps Tip button</div>
+            <div class="arch-flow-step">Frontend sends POST /tip</div>
+            <div class="arch-flow-step">Server checks sender balance</div>
+            <div class="arch-flow-step">BEGIN TRANSACTION</div>
+            <div class="arch-flow-step">Debit sender, credit creator (−8% fee)</div>
+            <div class="arch-flow-step">COMMIT + notify both users</div>
+          </div>
+          <h4>Cash-Out (Legend Only)</h4>
+          <p>Razorpay Payout API is used for UPI transfers to India. Minimum withdrawal: 1,000 AniCoins = ₹100. Withdrawal is processed within 2 business days. KYC verification required (Aadhaar + PAN for amounts over ₹10,000).</p>
+          <h4>Platform Revenue from Coins</h4>
+          <ul>
+            <li>8% fee on every tip transaction</li>
+            <li>AniPro subscription: ₹149/month (badges, no ads, 2× view rewards)</li>
+            <li>Event entry sponsorships from studios</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="arch-detail" id="arch-detail-events">
+        <div class="arch-detail-title" style="color:var(--coral)">🎉 Events Service Deep Dive</div>
+        <div class="arch-detail-body">
+          <h4>Event Lifecycle</h4>
+          <div class="arch-flow-steps">
+            <div class="arch-flow-step">Admin creates event</div>
+            <div class="arch-flow-step">Published to feed</div>
+            <div class="arch-flow-step">Users submit entries</div>
+            <div class="arch-flow-step">Community votes open</div>
+            <div class="arch-flow-step">Deadline hits (cron job)</div>
+            <div class="arch-flow-step">Winners auto-paid in AniCoins</div>
+          </div>
+          <h4>Database Schema</h4>
+          <ul>
+            <li><code>events</code> — id, title, description, type, prize_pool, start_at, end_at, sponsor_id</li>
+            <li><code>event_entries</code> — id, event_id, user_id, post_id, submitted_at, vote_count</li>
+            <li><code>event_votes</code> — event_id, voter_id, entry_id, voted_at (one vote per voter per event)</li>
+          </ul>
+          <h4>Real-Time Live Events</h4>
+          <p>Socket.io powers live vote counts, live entry submissions, and the countdown timer. When a vote is cast: <code>socket.emit('vote_update', {entry_id, new_count})</code> is broadcast to all clients watching that event room.</p>
+          <h4>Sponsored Events</h4>
+          <p>Studios pay to create branded events. They set the prize pool (in AniCoins or real cash), category rules, and optionally a jury panel. AnimeVerse charges ₹15,000–₹1,00,000 per sponsored event depending on prize size and platform featuring.</p>
+        </div>
+      </div>
+
+      <div class="arch-detail" id="arch-detail-security">
+        <div class="arch-detail-title" style="color:var(--coral)">🛡️ Security Layer Deep Dive</div>
+        <div class="arch-detail-body">
+          <h4>API Rate Limiting</h4>
+          <ul>
+            <li>General API: 100 requests/minute per IP</li>
+            <li>Auth endpoints: 5 attempts/15 minutes (prevents brute force)</li>
+            <li>Upload endpoint: 10 uploads/hour per user</li>
+            <li>Tip endpoint: 20 tips/hour per user (prevents automated draining)</li>
+          </ul>
+          <h4>Content Security</h4>
+          <ul>
+            <li>All image uploads scanned by <code>AWS Rekognition</code> for NSFW content before serving</li>
+            <li>Post text sanitized with <code>DOMPurify</code> to prevent XSS</li>
+            <li>SQL injection prevented by parameterized queries (never string concatenation)</li>
+            <li>File type validation: only JPG, PNG, GIF, WebP accepted (checked by magic bytes, not extension)</li>
+          </ul>
+          <h4>Data Security</h4>
+          <ul>
+            <li>All data in transit: HTTPS (TLS 1.3)</li>
+            <li>Passwords: bcrypt hash (never stored plain)</li>
+            <li>Database: encrypted at rest (AWS RDS with AES-256)</li>
+            <li>Sensitive fields (phone, UPI ID): encrypted at application level before storing</li>
+            <li>GDPR-compliant: users can export or delete all their data</li>
+          </ul>
+          <h4>Infrastructure</h4>
+          <ul>
+            <li>Cloudflare in front of everything: DDoS protection + WAF</li>
+            <li>VPC: backend services not publicly accessible, only through API gateway</li>
+            <li>Secrets management: AWS Secrets Manager (never .env files in production)</li>
+            <li>Logging: all auth events, transactions, and moderation actions logged to CloudWatch</li>
+          </ul>
+          <h4>Coin Fraud Prevention</h4>
+          <ul>
+            <li>All coin operations are atomic DB transactions — no double-spend possible</li>
+            <li>Withdrawal requires email OTP confirmation</li>
+            <li>KYC required for cash-out (Aadhaar + PAN stored encrypted)</li>
+            <li>Velocity limits: max 5,000 AniCoins withdrawable per week</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end page-architecture -->
+
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+
+<!-- Sign Up Modal -->
+<div class="modal-overlay" id="signup-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signup-modal')">✕</button>
+    <div class="modal-title">JOIN ANIMEVERSE</div>
+    <div class="modal-sub">Create your account and start earning Aura Points today</div>
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input type="text" class="form-input" placeholder="e.g. NarutoFan2026" id="signup-username">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" placeholder="you@email.com" id="signup-email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" placeholder="Min 8 characters" id="signup-password">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Favourite Anime (optional)</label>
+      <input type="text" class="form-input" placeholder="e.g. Jujutsu Kaisen, One Piece..." id="signup-anime">
+    </div>
+    <button class="btn-primary" style="width:100%;font-size:15px;padding:14px;justify-content:center" onclick="signUp()">Create Account → Start at Bronze</button>
+    <div class="divider"><span>or sign up with</span></div>
+    <div class="oauth-row">
+      <button class="oauth-btn" onclick="quickLogin('Discord')">
+        <div class="oauth-icon-wrap discord-bg" style="width:20px;height:20px;font-size:12px">D</div> Discord
+      </button>
+      <button class="oauth-btn" onclick="quickLogin('Google')">
+        <div class="oauth-icon-wrap google-bg" style="width:20px;height:20px;font-size:12px">G</div> Google
+      </button>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+      Already have an account? <button onclick="closeModal('signup-modal');openModal('login-modal')" style="background:none;border:none;color:var(--v2);cursor:pointer;font-family:var(--font-ui);font-size:13px;font-weight:600">Log in</button>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
+    <div class="modal-title">WELCOME BACK</div>
+    <div class="modal-sub">Log in to your AnimeVerse account</div>
+    <div class="form-group">
+      <label class="form-label">Email or Username</label>
+      <input type="text" class="form-input" placeholder="you@email.com" id="login-email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" placeholder="Your password" id="login-pass">
+    </div>
+    <button class="btn-primary" style="width:100%;font-size:15px;padding:14px;justify-content:center" onclick="login()">Log In →</button>
+    <div class="divider"><span>or</span></div>
+    <div class="oauth-row">
+      <button class="oauth-btn" onclick="quickLogin('Discord')">
+        <div class="oauth-icon-wrap discord-bg" style="width:20px;height:20px;font-size:12px">D</div> Discord
+      </button>
+      <button class="oauth-btn" onclick="quickLogin('Google')">
+        <div class="oauth-icon-wrap google-bg" style="width:20px;height:20px;font-size:12px">G</div> Google
+      </button>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+      Don't have an account? <button onclick="closeModal('login-modal');openModal('signup-modal')" style="background:none;border:none;color:var(--v2);cursor:pointer;font-family:var(--font-ui);font-size:13px;font-weight:600">Sign up free</button>
+    </div>
+  </div>
+</div>
+
+<!-- Send Coins Modal -->
+<div class="modal-overlay" id="send-coins-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('send-coins-modal')">✕</button>
+    <div class="modal-title">SEND ANICOINS</div>
+    <div class="modal-sub">Tip a creator you love · 8% platform fee applies</div>
+    <div class="form-group">
+      <label class="form-label">Recipient Username</label>
+      <input type="text" class="form-input" placeholder="@username" id="send-to" oninput="searchUser(this.value)">
+      <div id="user-suggestions" style="margin-top:4px"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount (AniCoins)</label>
+      <div class="coin-input-wrap">
+        <span class="coin-input-prefix">₳</span>
+        <input type="number" class="form-input coin-input-field" placeholder="100" id="send-amount" min="1" max="2840" oninput="updateSendFee()">
+      </div>
+      <div id="send-fee-display" style="font-size:12px;color:var(--muted);margin-top:6px">Creator receives 92% after platform fee</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message (optional)</label>
+      <input type="text" class="form-input" placeholder="Amazing work! 🔥" id="send-message">
+    </div>
+    <div style="background:var(--ink3);border-radius:var(--r-sm);padding:14px;margin-bottom:20px;font-size:13px;color:var(--muted)">
+      Your balance: <strong style="color:var(--gold)">2,840 AniCoins</strong> · Tx is instant and irreversible
+    </div>
+    <button class="btn-primary btn-gold" style="width:100%;font-size:15px;padding:14px;justify-content:center" onclick="sendCoins()">Send AniCoins →</button>
+  </div>
+</div>
+
+<!-- Top Up Modal -->
+<div class="modal-overlay" id="topup-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('topup-modal')">✕</button>
+    <div class="modal-title">TOP UP COINS</div>
+    <div class="modal-sub">Buy AniCoins with UPI, card, or net banking</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+      <div class="coin-card" onclick="selectTopup(this,100)" style="cursor:pointer;text-align:center">
+        <span class="coin-card-num">100</span><div class="coin-card-lbl">AniCoins · ₹10</div>
+      </div>
+      <div class="coin-card" onclick="selectTopup(this,500)" style="cursor:pointer;text-align:center">
+        <span class="coin-card-num">500</span><div class="coin-card-lbl">AniCoins · ₹50</div>
+      </div>
+      <div class="coin-card" onclick="selectTopup(this,1000)" style="cursor:pointer;text-align:center">
+        <span class="coin-card-num">1,000</span><div class="coin-card-lbl">AniCoins · ₹100</div>
+      </div>
+      <div class="coin-card" onclick="selectTopup(this,5000)" style="cursor:pointer;text-align:center;border-color:var(--gold)">
+        <span class="coin-card-num">5,000</span><div class="coin-card-lbl">AniCoins · ₹500 🔥 Best value</div>
+      </div>
+    </div>
+    <button class="btn-primary btn-gold" style="width:100%;font-size:15px;padding:14px;justify-content:center" id="topup-btn" onclick="processTopup()">Pay with Razorpay →</button>
+  </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div class="modal-overlay" id="withdraw-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('withdraw-modal')">✕</button>
+    <div class="modal-title">WITHDRAW</div>
+    <div class="modal-sub">Cash out your AniCoins via UPI</div>
+    <div style="background:rgba(216,90,48,0.1);border:1px solid rgba(216,90,48,0.3);border-radius:var(--r-md);padding:16px;margin-bottom:20px">
+      <div style="font-size:14px;font-weight:700;color:var(--coral);margin-bottom:4px">🔒 Legend Rank Required</div>
+      <div style="font-size:13px;color:var(--muted)">Cash-out is only available to Legend rank creators (100,000+ Aura Points). You currently have 7,240 pts. Keep posting to unlock this feature!</div>
+    </div>
+    <div style="opacity:0.4;pointer-events:none">
+      <div class="form-group">
+        <label class="form-label">UPI ID</label>
+        <input type="text" class="form-input" placeholder="yourname@upi" disabled>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Amount (min 1,000 AniCoins = ₹100)</label>
+        <input type="number" class="form-input" placeholder="1000" disabled>
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;font-size:15px;padding:14px;justify-content:center;opacity:0.5;cursor:not-allowed">Unlock at Legend Rank</button>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="edit-profile-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('edit-profile-modal')">✕</button>
+    <div class="modal-title">EDIT PROFILE</div>
+    <div class="modal-sub">Update your AnimeVerse profile</div>
+    <div class="form-group">
+      <label class="form-label">Display Name</label>
+      <input type="text" class="form-input" value="YourAnime" id="edit-name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input type="text" class="form-input" value="youranime" id="edit-handle">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Bio</label>
+      <textarea class="form-input" rows="3" id="edit-bio" style="resize:none">Anime creator from Mumbai. JJK fanart specialist. 🎨</textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <input type="text" class="form-input" value="Mumbai, India" id="edit-location">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Favourite Anime</label>
+        <input type="text" class="form-input" value="JJK, One Piece" id="edit-fave">
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;font-size:15px;padding:14px;justify-content:center" onclick="saveProfile()">Save Changes →</button>
+  </div>
+</div>
+
+<!-- Tip Modal -->
+<div class="modal-overlay" id="tip-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('tip-modal')">✕</button>
+    <div class="modal-title">SEND A TIP</div>
+    <div class="modal-sub" id="tip-modal-sub">Support this creator with AniCoins</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px">
+      <div class="coin-card" onclick="selectTip(this,50)" style="cursor:pointer;text-align:center;padding:14px">
+        <span style="font-family:var(--font-display);font-size:22px;color:var(--gold)">50</span>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Coins</div>
+      </div>
+      <div class="coin-card" onclick="selectTip(this,100)" style="cursor:pointer;text-align:center;padding:14px">
+        <span style="font-family:var(--font-display);font-size:22px;color:var(--gold)">100</span>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Coins</div>
+      </div>
+      <div class="coin-card" onclick="selectTip(this,200)" style="cursor:pointer;text-align:center;padding:14px">
+        <span style="font-family:var(--font-display);font-size:22px;color:var(--gold)">200</span>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Coins</div>
+      </div>
+      <div class="coin-card" onclick="selectTip(this,500)" style="cursor:pointer;text-align:center;padding:14px">
+        <span style="font-family:var(--font-display);font-size:22px;color:var(--gold)">500</span>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Coins 🔥</div>
+      </div>
+    </div>
+    <div id="tip-selected" style="font-size:14px;color:var(--muted);text-align:center;margin-bottom:16px">Select an amount above or enter custom:</div>
+    <input type="number" class="form-input" placeholder="Custom amount" id="tip-custom" oninput="setCustomTip(this.value)">
+    <button class="btn-primary btn-gold" style="width:100%;font-size:15px;padding:14px;justify-content:center;margin-top:14px" onclick="confirmTip()">Send Tip →</button>
+  </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="modal-overlay" id="terms-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('terms-modal')">✕</button>
+    <div class="modal-title">TERMS OF SERVICE</div>
+    <div style="font-size:14px;color:var(--body);line-height:1.7;max-height:400px;overflow-y:auto;padding-right:8px">
+      <h4 style="color:var(--v2);margin-bottom:8px">1. Content Policy</h4>
+      <p>Users may post anime fan-art, reviews, AMVs, cosplay, and discussion. NSFW, hate speech, and copyright infringement are strictly prohibited and will result in immediate account termination.</p>
+      <h4 style="color:var(--v2);margin:16px 0 8px">2. AniCoin Economy</h4>
+      <p>AniCoins are platform credits. AnimeVerse takes an 8% fee on all tip transactions. AniCoins have no guaranteed monetary value outside the platform. Cash-out is only available to Legend rank users who pass KYC verification.</p>
+      <h4 style="color:var(--v2);margin:16px 0 8px">3. Ranking System</h4>
+      <p>Aura Points are calculated based on genuine engagement. Any attempt to artificially inflate rankings (bots, view farms, coordinated inauthentic behavior) will result in point forfeiture and account ban.</p>
+      <h4 style="color:var(--v2);margin:16px 0 8px">4. Intellectual Property</h4>
+      <p>You retain copyright over your original content. By posting, you grant AnimeVerse a license to display and distribute your content on the platform. Fan art of copyrighted anime characters is allowed under fair use for non-commercial creative expression.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div class="modal-overlay" id="privacy-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('privacy-modal')">✕</button>
+    <div class="modal-title">PRIVACY POLICY</div>
+    <div style="font-size:14px;color:var(--body);line-height:1.7;max-height:400px;overflow-y:auto;padding-right:8px">
+      <h4 style="color:var(--v2);margin-bottom:8px">Data We Collect</h4>
+      <p>Email address, username, profile information, posts, and engagement activity. For KYC (cash-out only): government ID encrypted and stored separately from your profile.</p>
+      <h4 style="color:var(--v2);margin:16px 0 8px">Data Security</h4>
+      <p>All data is encrypted in transit (HTTPS/TLS 1.3) and at rest (AES-256). Passwords are stored as bcrypt hashes. We never sell your personal data to third parties.</p>
+      <h4 style="color:var(--v2);margin:16px 0 8px">Your Rights</h4>
+      <p>You can request a full export of your data, request deletion of your account, or update your information at any time from your profile settings. GDPR and India DPDP Act compliant.</p>
+      <h4 style="color:var(--v2);margin:16px 0 8px">Analytics</h4>
+      <p>We collect anonymized usage analytics to improve the platform. You can opt out of non-essential analytics in your settings. We do not use your data for advertising targeting.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <span id="toast-msg">Action completed</span>
+</div>
+
+<!-- ══ JAVASCRIPT ══ -->
+<script>
+// ── State ──
+let currentPage = 'home';
+let tipRecipient = '';
+let tipAmount = 0;
+let selectedTopup = 0;
+let walletBalance = 2840;
+
+// ── Page Router ──
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('[id^="nav-"]').forEach(b => b.classList.remove('active-nav'));
+  const navBtn = document.getElementById('nav-' + page);
+  if (navBtn) navBtn.classList.add('active-nav');
+  currentPage = page;
+
+  // Close any open arch detail panels when leaving arch page
+  if (page !== 'architecture') {
+    document.querySelectorAll('.arch-detail').forEach(d => d.classList.remove('open'));
+  }
+}
+
+// ── Modal ──
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('open');
+    }
+  });
+});
+
+// ── Toast ──
+let toastTimer;
+function showToast(icon, msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ── Auth ──
+function signUp() {
+  const username = document.getElementById('signup-username').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  if (!username || !email) { showToast('⚠️', 'Please fill in all required fields'); return; }
+  closeModal('signup-modal');
+  showPage('feed');
+  showToast('🎉', 'Welcome to AnimeVerse, ' + username + '! You start at Bronze rank.');
+}
+
+function login() {
+  const email = document.getElementById('login-email').value.trim();
+  if (!email) { showToast('⚠️', 'Please enter your email'); return; }
+  closeModal('login-modal');
+  showPage('feed');
+  showToast('✅', 'Logged in successfully! Welcome back.');
+}
+
+function quickLogin(provider) {
+  closeModal('signup-modal');
+  closeModal('login-modal');
+  showPage('feed');
+  showToast('✅', 'Signed in with ' + provider + '! Welcome to AnimeVerse.');
+}
+
+// ── Feed ──
+function submitPost() {
+  const text = document.getElementById('composer-text').value.trim();
+  if (!text) { showToast('⚠️', 'Write something before posting!'); return; }
+  const feed = document.getElementById('feed-posts');
+  const newPost = document.createElement('div');
+  newPost.className = 'post-card';
+  newPost.style.animation = 'fade-up 0.4s ease';
+  newPost.innerHTML = `
+    <div class="post-header">
+      <div class="post-avatar" style="background:rgba(124,111,205,0.3);color:var(--v2)">YA</div>
+      <div class="post-meta">
+        <div><span class="post-author">YourAnime</span><span class="post-rank-badge badge-gold">⭐ GOLD</span></div>
+        <div class="post-time">Just now · Post</div>
+      </div>
+    </div>
+    <div class="post-body">${text}</div>
+    <div class="post-actions">
+      <button class="post-action-btn" onclick="likePost(this)">❤️ <span class="like-count">0</span></button>
+      <button class="post-action-btn" onclick="showToast('💬 Comments','Be the first to comment!')">💬 0</button>
+      <button class="post-action-btn" onclick="showToast('↗️ Shared!','Link copied')">↗️ Share</button>
+      <div class="post-action-spacer"></div>
+      <div class="post-views">👁️ 1 view</div>
+    </div>`;
+  feed.insertBefore(newPost, feed.firstChild);
+  document.getElementById('composer-text').value = '';
+  showToast('🎉', 'Posted! +5 Aura Points earned. Keep creating!');
+}
+
+function likePost(btn) {
+  btn.classList.toggle('liked');
+  const countEl = btn.querySelector('.like-count');
+  let count = parseInt(countEl.textContent.replace(',',''));
+  if (btn.classList.contains('liked')) {
+    count++;
+    showToast('❤️', '+2 Aura Points for the creator!');
+  } else {
+    count--;
+  }
+  countEl.textContent = count >= 1000 ? (count/1000).toFixed(1) + 'K' : count;
+}
+
+function setFeedFilter(btn, filter) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  showToast('🔍', 'Showing: ' + (filter === 'all' ? 'All Posts' : filter.charAt(0).toUpperCase() + filter.slice(1)));
+}
+
+function filterFeed(type) {
+  showPage('feed');
+  showToast('🔍', 'Filtering by: ' + type);
+}
+
+function showPostMenu(btn) {
+  showToast('⋯', 'Options: Save, Report, Copy link');
+}
+
+function addTag() {
+  const textarea = document.getElementById('composer-text');
+  textarea.value += ' #';
+  textarea.focus();
+}
+
+// ── Profile ──
+function switchProfileTab(btn, tab) {
+  document.querySelectorAll('.profile-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const content = document.getElementById('profile-tab-content');
+
+  if (tab === 'watchlist') {
+    content.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">📺 Currently Watching</div>
+          ${['Dungeon Meshi', 'Re:Zero S3', 'One Piece (current)'].map(a => `<div style="padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);margin-bottom:8px;font-size:14px;color:var(--white)">${a}</div>`).join('')}
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">✅ Completed</div>
+          ${['JJK S2', 'Chainsaw Man', 'Oshi no Ko', 'Attack on Titan'].map(a => `<div style="padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);margin-bottom:8px;font-size:14px;color:var(--body)">${a}</div>`).join('')}
+        </div>
+      </div>`;
+  } else if (tab === 'rewards') {
+    content.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+        <div class="wallet-stat" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:20px">
+          <span class="wallet-stat-num" style="color:var(--gold);font-family:var(--font-display);font-size:32px;display:block">2,840</span>
+          <div style="font-size:12px;color:var(--muted)">AniCoin Balance</div>
+        </div>
+        <div class="wallet-stat" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:20px">
+          <span class="wallet-stat-num" style="color:var(--teal);font-family:var(--font-display);font-size:32px;display:block">7,240</span>
+          <div style="font-size:12px;color:var(--muted)">Total Aura Points</div>
+        </div>
+        <div class="wallet-stat" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:20px">
+          <span class="wallet-stat-num" style="color:var(--v2);font-family:var(--font-display);font-size:32px;display:block">3</span>
+          <div style="font-size:12px;color:var(--muted)">Events Entered</div>
+        </div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:12px">Earned Badges</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        ${[['⭐','Gold Creator','Current rank'],['🎨','Art Master','50 art posts'],['💰','First Earnings','First AniCoin earned'],['🎉','Contestant','Entered an event']].map(([icon,name,desc]) => `
+          <div style="background:var(--surface);border:1px solid var(--line2);border-radius:var(--r-md);padding:16px;text-align:center;min-width:100px">
+            <div style="font-size:28px;margin-bottom:6px">${icon}</div>
+            <div style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px">${name}</div>
+            <div style="font-size:11px;color:var(--muted)">${desc}</div>
+          </div>`).join('')}
+      </div>`;
+  } else if (tab === 'about') {
+    content.innerHTML = `
+      <div style="max-width:560px">
+        <div style="font-size:15px;color:var(--body);line-height:1.7;margin-bottom:20px">Anime creator from Mumbai. JJK fanart specialist with 3 years of digital art experience. I also write episode reviews and the occasional AMV. Always in the top 10% globally.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          ${[['📍 Location','Mumbai, India'],['🎌 Favourite Anime','JJK, One Piece, Chainsaw Man'],['🎨 Content Type','Art, Reviews, AMVs'],['📅 Member Since','January 2026']].map(([k,v]) => `
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:14px">
+              <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${k}</div>
+              <div style="font-size:14px;font-weight:600;color:var(--white)">${v}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    // posts tab (default)
+    content.innerHTML = `<div class="posts-masonry">
+      ${[['🎨','My Naruto tribute art','❤️ 1,204 · 👁️ 14.2K',180],['📝','Top 10 isekai of 2026','❤️ 892 · 👁️ 8.7K',180],['🎬','Demon Slayer AMV — Breath of Fire','❤️ 3,441 · 👁️ 28.1K',220],['✨','My Tanjiro cosplay at AniFest','❤️ 2,108 · 👁️ 19.4K',180],['🔥','One Piece final arc predictions','❤️ 576 · 👁️ 6.2K',160],['😂','When the filler arc hits','❤️ 4,820 · 👁️ 62.3K',180]].map(([icon,title,meta,h]) => `
+        <div class="masonry-card" onclick="showToast('📖 Post','${title}')">
+          <div class="masonry-img" style="height:${h}px">${icon}</div>
+          <div class="masonry-body"><div class="masonry-title">${title}</div><div class="masonry-meta">${meta}</div></div>
+        </div>`).join('')}
+    </div>`;
+  }
+}
+
+function saveProfile() {
+  const name = document.getElementById('edit-name').value;
+  closeModal('edit-profile-modal');
+  showToast('✅', 'Profile updated: ' + name);
+}
+
+function showProfile(username) {
+  showPage('profile');
+  showToast('👤', 'Viewing profile: ' + username);
+}
+
+// ── Events ──
+function enterEvent(name) {
+  showToast('🎉', 'Entering: ' + name + '! Good luck! +5 pts for entering.');
+  closeModal('tip-modal');
+}
+
+// ── Architecture ──
+function toggleArch(section) {
+  const detail = document.getElementById('arch-detail-' + section);
+  const isOpen = detail.classList.contains('open');
+  document.querySelectorAll('.arch-detail').forEach(d => d.classList.remove('open'));
+  if (!isOpen) {
+    detail.classList.add('open');
+    setTimeout(() => detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  }
+}
+
+// ── Wallet / Coins ──
+function updateSendFee() {
+  const amount = parseInt(document.getElementById('send-amount').value) || 0;
+  const fee = Math.round(amount * 0.08);
+  const receives = amount - fee;
+  document.getElementById('send-fee-display').textContent = 
+    amount > 0 ? `Creator receives ${receives} AniCoins · Platform fee: ${fee} coins (8%)` : 'Creator receives 92% after platform fee';
+}
+
+function searchUser(val) {
+  const container = document.getElementById('user-suggestions');
+  if (!val || val.length < 2) { container.innerHTML = ''; return; }
+  const users = ['SakuraHaze', 'KaijuYuki', 'MechaDragon', 'RinNakamura', 'TokyoOtaku', 'AnimeGod99'];
+  const matches = users.filter(u => u.toLowerCase().includes(val.toLowerCase().replace('@','')));
+  container.innerHTML = matches.map(u => `
+    <div class="user-search-result" onclick="document.getElementById('send-to').value='@${u}';document.getElementById('user-suggestions').innerHTML=''">
+      <div style="width:28px;height:28px;border-radius:50%;background:var(--v3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">${u.slice(0,2).toUpperCase()}</div>
+      <div style="font-size:14px;color:var(--white)">@${u}</div>
+    </div>`).join('');
+}
+
+function sendCoins() {
+  const to = document.getElementById('send-to').value.trim();
+  const amount = parseInt(document.getElementById('send-amount').value);
+  if (!to || !amount || amount < 1) { showToast('⚠️', 'Please fill in all fields'); return; }
+  if (amount > walletBalance) { showToast('❌', 'Insufficient balance!'); return; }
+  walletBalance -= amount;
+  document.getElementById('wallet-balance').textContent = walletBalance.toLocaleString();
+  closeModal('send-coins-modal');
+  showToast('💸', `Sent ${amount} AniCoins to ${to}!`);
+  document.getElementById('send-to').value = '';
+  document.getElementById('send-amount').value = '';
+}
+
+function selectTopup(el, amount) {
+  document.querySelectorAll('#topup-modal .coin-card').forEach(c => c.style.borderColor = '');
+  el.style.borderColor = 'var(--gold)';
+  selectedTopup = amount;
+  document.getElementById('topup-btn').textContent = `Pay ₹${amount/10} for ${amount.toLocaleString()} AniCoins →`;
+}
+
+function processTopup() {
+  if (!selectedTopup) { showToast('⚠️', 'Please select an amount'); return; }
+  walletBalance += selectedTopup;
+  document.getElementById('wallet-balance').textContent = walletBalance.toLocaleString();
+  closeModal('topup-modal');
+  showToast('✅', `${selectedTopup.toLocaleString()} AniCoins added to your wallet!`);
+  selectedTopup = 0;
+}
+
+function openTipModal(username) {
+  tipRecipient = username;
+  document.getElementById('tip-modal-sub').textContent = 'Send AniCoins to ' + username + ' · 8% platform fee';
+  document.querySelectorAll('#tip-modal .coin-card').forEach(c => c.style.borderColor = '');
+  document.getElementById('tip-custom').value = '';
+  document.getElementById('tip-selected').textContent = 'Select an amount above or enter custom:';
+  tipAmount = 0;
+  openModal('tip-modal');
+}
+
+function selectTip(el, amount) {
+  document.querySelectorAll('#tip-modal .coin-card').forEach(c => c.style.borderColor = '');
+  el.style.borderColor = 'var(--gold)';
+  tipAmount = amount;
+  document.getElementById('tip-custom').value = '';
+  document.getElementById('tip-selected').textContent = `Selected: ${amount} AniCoins → Creator gets ${Math.round(amount*0.92)}`;
+}
+
+function setCustomTip(val) {
+  document.querySelectorAll('#tip-modal .coin-card').forEach(c => c.style.borderColor = '');
+  tipAmount = parseInt(val) || 0;
+  if (tipAmount > 0) document.getElementById('tip-selected').textContent = `Custom: ${tipAmount} AniCoins → Creator gets ${Math.round(tipAmount*0.92)}`;
+}
+
+function confirmTip() {
+  if (!tipAmount || tipAmount < 1) { showToast('⚠️', 'Select an amount first'); return; }
+  if (tipAmount > walletBalance) { showToast('❌', 'Not enough AniCoins!'); return; }
+  walletBalance -= tipAmount;
+  document.getElementById('wallet-balance').textContent = walletBalance.toLocaleString();
+  closeModal('tip-modal');
+  showToast('💛', `Tipped ${tipAmount} AniCoins to ${tipRecipient}! 🙏`);
+}
+
+// ── Keyboard ESC to close modal ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+// ── Init ──
+showPage('home');
+</script>
+</body>
+</html>
