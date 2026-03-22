@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnimeVerse — Rise Through the Ranks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & TOKENS ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:      #0a0a0f;
+  --ink2:     #12121a;
+  --ink3:     #1c1c28;
+  --surface:  #1e1e2e;
+  --line:     rgba(255,255,255,0.08);
+  --line2:    rgba(255,255,255,0.14);
+  --muted:    rgba(255,255,255,0.38);
+  --body:     rgba(255,255,255,0.72);
+  --white:    #ffffff;
+
+  /* brand accent ramp */
+  --v:        #7c6fcd;   /* violet */
+  --v2:       #a99ef0;   /* violet light */
+  --v3:       #4a3f9f;   /* violet deep */
+  --gold:     #e8a030;   /* amber/gold */
+  --gold2:    #f0c060;   /* gold light */
+  --coral:    #d85a30;   /* coral */
+  --teal:     #1da880;   /* teal */
+
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-ui:      'Syne', sans-serif;
+  --font-jp:      'Noto Sans JP', sans-serif;
+
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 28px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  background: linear-gradient(to bottom, rgba(10,10,15,0.95) 0%, transparent 100%);
+  backdrop-filter: blur(0px);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo-mark {
+  width: 32px; height: 32px;
+  background: var(--v);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.nav-logo-mark::after {
+  content: '▲';
+  font-size: 14px;
+  color: white;
+  display: block;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+
+.nav-cta {
+  background: var(--v);
+  color: white !important;
+  padding: 9px 22px;
+  border-radius: var(--r-sm);
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.06em !important;
+  transition: background 0.2s !important;
+}
+.nav-cta:hover { background: var(--v2) !important; color: var(--ink) !important; }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 120px 48px 80px;
+}
+
+/* Geometric background grid */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Floating rank orbs */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: orb-drift 8s ease-in-out infinite;
+}
+.hero-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(124,111,205,0.28) 0%, transparent 70%);
+  top: -100px; left: -100px;
+  animation-delay: 0s;
+}
+.hero-orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(232,160,48,0.18) 0%, transparent 70%);
+  top: 40%; right: 5%;
+  animation-delay: -3s;
+}
+.hero-orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(29,168,128,0.15) 0%, transparent 70%);
+  bottom: 10%; left: 30%;
+  animation-delay: -5s;
+}
+
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0, 0); }
+  33%       { transform: translate(20px, -30px); }
+  66%       { transform: translate(-15px, 20px); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(124,111,205,0.15);
+  border: 1px solid rgba(124,111,205,0.35);
+  border-radius: 40px;
+  padding: 6px 16px 6px 10px;
+  margin-bottom: 32px;
+  animation: fade-up 0.6s ease both;
+}
+.hero-eyebrow-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--v2);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%     { opacity: 0.5; transform: scale(0.7); }
+}
+.hero-eyebrow span {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--v2);
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(72px, 10vw, 120px);
+  line-height: 0.92;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  animation: fade-up 0.7s 0.1s ease both;
+}
+.hero-title .line-1 { color: var(--white); display: block; }
+.hero-title .line-2 {
+  display: block;
+  -webkit-text-stroke: 2px var(--v2);
+  color: transparent;
+}
+.hero-title .line-3 { color: var(--gold); display: block; }
+
+.hero-jp {
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  margin-bottom: 28px;
+  animation: fade-up 0.7s 0.2s ease both;
+}
+
+.hero-desc {
+  font-size: 17px;
+  color: var(--body);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 40px;
+  font-weight: 400;
+  animation: fade-up 0.7s 0.3s ease both;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  animation: fade-up 0.7s 0.4s ease both;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--v);
+  color: white;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  padding: 15px 32px;
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.btn-primary:hover { background: var(--v2); transform: translateY(-2px); }
+.btn-primary svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--body);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  padding: 15px 24px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line2);
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.btn-ghost:hover { border-color: var(--v2); color: var(--v2); background: rgba(124,111,205,0.07); }
+
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+  animation: fade-up 0.7s 0.5s ease both;
+}
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: 1px;
+  color: var(--white);
+  display: block;
+  line-height: 1;
+}
+.hero-stat-lbl {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.hero-stat-divider {
+  width: 1px; height: 40px;
+  background: var(--line2);
+}
+
+/* Floating rank cards on right side */
+.hero-visual {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fade-left 0.8s 0.3s ease both;
+  z-index: 2;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-left {
+  from { opacity: 0; transform: translateX(32px) translateY(-50%); }
+  to   { opacity: 1; transform: translateX(0) translateY(-50%); }
+}
+
+.rank-card {
+  background: rgba(30, 30, 46, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 240px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.rank-card:hover { transform: translateX(-6px); border-color: var(--v); }
+.rank-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.rank-card.legend::before  { background: var(--coral); }
+.rank-card.platinum::before { background: var(--v2); }
+.rank-card.gold::before    { background: var(--gold); }
+.rank-card.silver::before  { background: #8ca8c0; }
+.rank-card.bronze::before  { background: #a07850; }
+
+.rank-icon {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.rank-card.legend  .rank-icon { background: rgba(216,90,48,0.2);  }
+.rank-card.platinum .rank-icon { background: rgba(169,158,240,0.2); }
+.rank-card.gold    .rank-icon { background: rgba(232,160,48,0.2);  }
+.rank-card.silver  .rank-icon { background: rgba(140,168,192,0.2); }
+.rank-card.bronze  .rank-icon { background: rgba(160,120,80,0.2);  }
+
+.rank-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+.rank-pts {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+  font-family: var(--font-jp);
+}
+
+.rank-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.rank-bar-fill { height: 100%; border-radius: 4px; }
+.rank-card.legend  .rank-bar-fill { width: 88%; background: var(--coral); }
+.rank-card.platinum .rank-bar-fill { width: 72%; background: var(--v2); }
+.rank-card.gold    .rank-bar-fill { width: 55%; background: var(--gold); }
+.rank-card.silver  .rank-bar-fill { width: 38%; background: #8ca8c0; }
+.rank-card.bronze  .rank-bar-fill { width: 20%; background: #a07850; }
+
+/* ── FEATURES STRIP ── */
+.features-strip {
+  padding: 80px 48px;
+  background: var(--ink2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.features-strip-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.strip-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--v2);
+  margin-bottom: 16px;
+}
+.strip-title {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5vw, 64px);
+  letter-spacing: 1px;
+  line-height: 0.95;
+  color: var(--white);
+  margin-bottom: 48px;
+}
+.strip-title em {
+  font-style: normal;
+  color: var(--gold);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.feature-cell {
+  background: var(--ink2);
+  padding: 32px 28px;
+  transition: background 0.2s;
+  cursor: default;
+}
+.feature-cell:hover { background: var(--surface); }
+
+.feature-icon-wrap {
+  width: 44px; height: 44px;
+  border-radius: var(--r-sm);
+  margin-bottom: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.f-purple { background: rgba(124,111,205,0.18); }
+.f-gold   { background: rgba(232,160,48,0.18); }
+.f-teal   { background: rgba(29,168,128,0.18); }
+.f-coral  { background: rgba(216,90,48,0.18); }
+.f-blue   { background: rgba(56,138,221,0.18); }
+.f-pink   { background: rgba(212,83,126,0.18); }
+
+.feature-cell h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+.feature-cell p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ── RANKING SHOWCASE ── */
+.ranking-section {
+  padding: 100px 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4vw, 56px);
+  letter-spacing: 1px;
+  line-height: 0.95;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+.section-body {
+  font-size: 15px;
+  color: var(--body);
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+
+.tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tier-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+.tier-item:hover { border-color: var(--line2); transform: translateX(6px); }
+
+.tier-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.t-legend  { background: var(--coral); box-shadow: 0 0 8px rgba(216,90,48,0.6); }
+.t-platinum { background: var(--v2);   box-shadow: 0 0 8px rgba(169,158,240,0.6); }
+.t-gold    { background: var(--gold);  box-shadow: 0 0 8px rgba(232,160,48,0.6); }
+.t-silver  { background: #8ca8c0; }
+.t-bronze  { background: #a07850; }
+
+.tier-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+  min-width: 72px;
+}
+.tier-range {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--font-jp);
+  flex: 1;
+}
+.tier-perk {
+  font-size: 11px;
+  color: var(--v2);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: rgba(124,111,205,0.12);
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.tier-item:nth-child(1) .tier-perk { background: rgba(216,90,48,0.12); color: var(--coral); }
+.tier-item:nth-child(2) .tier-perk { background: rgba(169,158,240,0.12); color: var(--v2); }
+.tier-item:nth-child(3) .tier-perk { background: rgba(232,160,48,0.12); color: var(--gold); }
+
+/* ── ANICOIN SECTION ── */
+.coin-section {
+  padding: 80px 48px;
+  background: var(--ink2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.coin-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.coin-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.coin-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 20px;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+.coin-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+.coin-card-num {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 4px;
+}
+.coin-card-lbl {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.coin-card-icon {
+  font-size: 20px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* ── EVENTS SECTION ── */
+.events-section {
+  padding: 100px 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 48px;
+}
+.event-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+.event-card:hover { border-color: var(--v); transform: translateY(-4px); }
+.event-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.event-card:nth-child(1)::before { background: linear-gradient(90deg, var(--v), var(--teal)); }
+.event-card:nth-child(2)::before { background: linear-gradient(90deg, var(--gold), var(--coral)); }
+.event-card:nth-child(3)::before { background: linear-gradient(90deg, var(--coral), var(--v)); }
+
+.event-status {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.status-live  { background: rgba(29,168,128,0.18); color: var(--teal); }
+.status-soon  { background: rgba(232,160,48,0.18); color: var(--gold); }
+.status-open  { background: rgba(124,111,205,0.18); color: var(--v2); }
+
+.event-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+.event-card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.event-prize {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+}
+.event-prize-coin {
+  width: 20px; height: 20px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--ink);
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* ── SOCIAL PROOF ── */
+.proof-section {
+  padding: 80px 48px;
+  background: var(--ink2);
+  border-top: 1px solid var(--line);
+}
+.proof-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 40px;
+}
+.proof-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 24px;
+}
+.proof-quote {
+  font-size: 14px;
+  color: var(--body);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+.proof-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.proof-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.proof-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+}
+.proof-handle {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-jp);
+}
+
+/* ── CTA ── */
+.cta-section {
+  padding: 120px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 0%, rgba(124,111,205,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8vw, 96px);
+  line-height: 0.92;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 24px;
+  position: relative;
+}
+.cta-section h2 em {
+  font-style: normal;
+  -webkit-text-stroke: 2px var(--v2);
+  color: transparent;
+}
+.cta-section p {
+  font-size: 17px;
+  color: var(--body);
+  max-width: 480px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+  position: relative;
+}
+.cta-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.login-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  position: relative;
+}
+.oauth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 20px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line2);
+  background: var(--surface);
+  color: var(--body);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.oauth-btn:hover { border-color: var(--v); background: rgba(124,111,205,0.08); color: var(--white); }
+.oauth-icon { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; }
+.discord-icon { background: #5865F2; color: white; }
+.google-icon  { background: white; color: #333; }
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px 48px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+.footer-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+.footer-copy {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--font-jp);
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--v3); }
+
+/* ── MEDIA ── */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .hero-visual { display: none; }
+  .hero-title { font-size: 64px; }
+  .features-strip, .coin-section, .proof-section { padding: 60px 24px; }
+  .events-section, .ranking-section { padding: 60px 24px; }
+  .features-grid, .events-grid, .proof-grid { grid-template-columns: 1fr; }
+  .ranking-section, .coin-inner { grid-template-columns: 1fr; gap: 40px; }
+  .coin-section { padding: 60px 24px; }
+  .cta-section { padding: 80px 24px; }
+  footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark"></div>
+    ANIMEVERSE
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#ranking">Ranking</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#" class="nav-cta">Join free →</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      <span>Now live — join the community</span>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="line-1">POST.</span>
+      <span class="line-2">RANK.</span>
+      <span class="line-3">EARN.</span>
+    </h1>
+
+    <p class="hero-jp">アニメの世界へようこそ · Your anime. Your rank. Your rewards.</p>
+
+    <p class="hero-desc">
+      AnimeVerse is the social platform where anime fans post art, AMVs, and reviews — then climb a live ranking system and earn real rewards for their passion.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3v14M3 10h14"/></svg>
+        Start for free
+      </a>
+      <a href="#features" class="btn-ghost">
+        See how it works →
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">5</span>
+        <div class="hero-stat-lbl">Rank tiers</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">AniCoins</span>
+        <div class="hero-stat-lbl">Real rewards</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">∞</span>
+        <div class="hero-stat-lbl">Events & contests</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating rank cards -->
+  <div class="hero-visual">
+    <div class="rank-card legend">
+      <div class="rank-icon">🔥</div>
+      <div style="flex:1;">
+        <div class="rank-name">LEGEND</div>
+        <div class="rank-pts">100,000+ Aura pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+    <div class="rank-card platinum">
+      <div class="rank-icon">⚡</div>
+      <div style="flex:1;">
+        <div class="rank-name">PLATINUM</div>
+        <div class="rank-pts">20,000 – 99,999 pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+    <div class="rank-card gold">
+      <div class="rank-icon">⭐</div>
+      <div style="flex:1;">
+        <div class="rank-name">GOLD</div>
+        <div class="rank-pts">5,000 – 19,999 pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+    <div class="rank-card silver">
+      <div class="rank-icon">🌙</div>
+      <div style="flex:1;">
+        <div class="rank-name">SILVER</div>
+        <div class="rank-pts">1,000 – 4,999 pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+    <div class="rank-card bronze">
+      <div class="rank-icon">🌱</div>
+      <div style="flex:1;">
+        <div class="rank-name">BRONZE</div>
+        <div class="rank-pts">0 – 999 pts</div>
+        <div class="rank-bar-wrap"><div class="rank-bar-fill"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="features-strip" id="features">
+  <div class="features-strip-inner">
+    <div class="strip-label">Everything you need</div>
+    <div class="strip-title">Built for <em>real</em> anime fans</div>
+    <div class="features-grid">
+      <div class="feature-cell">
+        <div class="feature-icon-wrap f-purple">🎨</div>
+        <h3>Post anything anime</h3>
+        <p>Fan-art, AMVs, episode reviews, memes, cosplay. Every post earns you Aura Points based on views and engagement.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="feature-icon-wrap f-gold">🏆</div>
+        <h3>Live ranking system</h3>
+        <p>Climb from Bronze to Legend through 5 tiers. Your rank updates in real time as your content gets views and tips.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="feature-icon-wrap f-teal">💰</div>
+        <h3>Earn real rewards</h3>
+        <p>Top creators earn AniCoins from views, tips, and event prizes. Legend rank users can cash out to real money.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="feature-icon-wrap f-coral">🎉</div>
+        <h3>Events & contests</h3>
+        <p>Weekly sponsored art contests, AMV battles, and live watch parties. Win AniCoins and studio collaborations.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="feature-icon-wrap f-blue">📋</div>
+        <h3>Anime watchlist</h3>
+        <p>Track what you're watching, completed, and plan to watch. Discover what creators you follow are watching too.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="feature-icon-wrap f-pink">👥</div>
+        <h3>True community</h3>
+        <p>Follow creators, tip their work with AniCoins, join your nakama. This is the home anime fans always deserved.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RANKING ══ -->
+<section id="ranking" style="padding: 0 0; overflow: hidden;">
+  <div class="ranking-section">
+    <div>
+      <div class="section-label">Ranking system</div>
+      <h2 class="section-title">CLIMB.<br>EVERY.<br>LEVEL.</h2>
+      <p class="section-body">
+        Every post, every view, every tip adds Aura Points to your profile. Your rank updates live — and with each tier comes new perks, higher visibility, and bigger rewards.
+      </p>
+      <a href="#" class="btn-primary" style="font-size:14px; padding: 12px 24px;">
+        See your rank →
+      </a>
+    </div>
+    <div class="tier-list">
+      <div class="tier-item">
+        <div class="tier-dot t-legend"></div>
+        <div class="tier-name">Legend</div>
+        <div class="tier-range">100,000+ pts · top 0.1%</div>
+        <div class="tier-perk">Cash-out enabled</div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot t-platinum"></div>
+        <div class="tier-name">Platinum</div>
+        <div class="tier-range">20,000 – 99,999 pts</div>
+        <div class="tier-perk">Studio access</div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot t-gold"></div>
+        <div class="tier-name">Gold</div>
+        <div class="tier-range">5,000 – 19,999 pts</div>
+        <div class="tier-perk">Event priority</div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot t-silver"></div>
+        <div class="tier-name">Silver</div>
+        <div class="tier-range">1,000 – 4,999 pts</div>
+        <div class="tier-perk">Custom tags</div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot t-bronze"></div>
+        <div class="tier-name">Bronze</div>
+        <div class="tier-range">0 – 999 pts</div>
+        <div class="tier-perk">Start here</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ANICOIN ══ -->
+<section class="coin-section">
+  <div class="coin-inner">
+    <div>
+      <div class="section-label" style="color: var(--gold);">AniCoin economy</div>
+      <h2 class="section-title">EARN.<br>TIP.<br>WITHDRAW.</h2>
+      <p class="section-body">
+        AniCoins are the platform currency. Earn them through content views and event wins. Send them to creators you love. Legend rank users can withdraw real money.
+      </p>
+      <a href="#" class="btn-primary" style="font-size:14px; padding: 12px 24px; background: var(--gold);">
+        Learn about AniCoins →
+      </a>
+    </div>
+    <div class="coin-cards">
+      <div class="coin-card">
+        <span class="coin-card-icon">🎨</span>
+        <span class="coin-card-num">+pts</span>
+        <div class="coin-card-lbl">Every view on your post earns Aura Points</div>
+      </div>
+      <div class="coin-card">
+        <span class="coin-card-icon">💸</span>
+        <span class="coin-card-num">8%</span>
+        <div class="coin-card-lbl">Platform fee on tips — you keep the rest</div>
+      </div>
+      <div class="coin-card">
+        <span class="coin-card-icon">🏆</span>
+        <span class="coin-card-num">5K+</span>
+        <div class="coin-card-lbl">AniCoins in monthly event prize pools</div>
+      </div>
+      <div class="coin-card">
+        <span class="coin-card-icon">💳</span>
+        <span class="coin-card-num">UPI</span>
+        <div class="coin-card-lbl">Cash out via Razorpay (Legend rank only)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EVENTS ══ -->
+<section class="events-section" id="events">
+  <div class="section-label" style="color: var(--gold);">Events & contests</div>
+  <h2 class="section-title" style="font-family: var(--font-display); font-size: clamp(40px,6vw,72px); letter-spacing:1px; margin-bottom: 12px;">COMPETE. WIN. REPEAT.</h2>
+  <p style="font-size: 15px; color: var(--muted); max-width: 520px; margin: 0 auto; line-height: 1.7;">Sponsored art contests, AMV battles, live watch parties — every week brings a new chance to earn AniCoins and get discovered by studios.</p>
+  <div class="events-grid">
+    <div class="event-card">
+      <div class="event-status status-live">● Live now</div>
+      <h3>Spring Art Festival 2026</h3>
+      <p>Fan-art contest sponsored by Crunchyroll India. Any anime, any style. Top 3 win coins + featured placement.</p>
+      <div class="event-prize">
+        <div class="event-prize-coin">A</div>
+        50,000 AniCoins prize pool
+      </div>
+    </div>
+    <div class="event-card">
+      <div class="event-status status-soon">Coming soon</div>
+      <h3>AMV Weekly Battle</h3>
+      <p>Best AMV of the week gets featured on the platform homepage and earns bonus Aura Points for 7 days.</p>
+      <div class="event-prize">
+        <div class="event-prize-coin">A</div>
+        12,000 AniCoins + spotlight
+      </div>
+    </div>
+    <div class="event-card">
+      <div class="event-status status-open">Open entry</div>
+      <h3>Mappa Collab Contest</h3>
+      <p>Studio-sponsored contest — winner gets official collaboration credit and their art used in promotional material.</p>
+      <div class="event-prize">
+        <div class="event-prize-coin">A</div>
+        25,000 coins + studio deal
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOCIAL PROOF ══ -->
+<section class="proof-section">
+  <div class="proof-inner">
+    <div class="section-label" style="text-align:center;">What creators say</div>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <p class="proof-quote">"I've been posting anime art for 3 years. AnimeVerse is the first platform where I actually feel like the community sees my work — and rewards it."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background: rgba(124,111,205,0.25); color: var(--v2);">SH</div>
+          <div>
+            <div class="proof-name">SakuraHaze</div>
+            <div class="proof-handle">Legend · 284K followers</div>
+          </div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <p class="proof-quote">"Climbed from Bronze to Gold in 2 months just by posting consistently. The ranking system actually makes you want to create more — it's addictive."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background: rgba(232,160,48,0.25); color: var(--gold);">KY</div>
+          <div>
+            <div class="proof-name">KaijuYuki</div>
+            <div class="proof-handle">Gold · 48K followers</div>
+          </div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <p class="proof-quote">"Won the Spring Art Fest and my art was shared by Crunchyroll India. Three months later I have a studio collaboration. This platform changed everything."</p>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background: rgba(29,168,128,0.25); color: var(--teal);">MR</div>
+          <div>
+            <div class="proof-name">MechaDragon</div>
+            <div class="proof-handle">Platinum · 92K followers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section class="cta-section">
+  <h2>YOUR<br><em>LEGEND</em><br>STARTS NOW</h2>
+  <p>Join thousands of anime creators already ranking up, earning AniCoins, and competing in events every week.</p>
+  <div class="cta-actions">
+    <a href="#" class="btn-primary" style="font-size: 16px; padding: 17px 38px;">
+      Create free account →
+    </a>
+  </div>
+  <div class="login-row">
+    <span style="font-size:13px; color: var(--muted);">Or sign in with</span>
+    <a href="#" class="oauth-btn">
+      <div class="oauth-icon discord-icon">D</div>
+      Discord
+    </a>
+    <a href="#" class="oauth-btn">
+      <div class="oauth-icon google-icon">G</div>
+      Google
+    </a>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-logo">ANIMEVERSE</div>
+  <ul class="footer-links">
+    <li><a href="#">Features</a></li>
+    <li><a href="#">Ranking</a></li>
+    <li><a href="#">Events</a></li>
+    <li><a href="#">AniPro</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Privacy</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 AnimeVerse · アニメバース</div>
+</footer>
+
+</body>
+</html>
